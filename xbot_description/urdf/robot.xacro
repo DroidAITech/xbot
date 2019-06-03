@@ -8,8 +8,8 @@
   <xacro:include filename="$(find xbot_description)/urdf/sick_tim.urdf.xacro" />
 
   <!-- Choose your laser -->
-  <xacro:sick_tim571 name="laser" ros_topic="scan"   />
-  <!-- <xacro:rplidarA2 name="laser" ros_topic="scan"   /> -->
+  <!--<xacro:sick_tim571 name="laser" ros_topic="scan"   />-->
+  <xacro:rplidarA2 name="laser" ros_topic="scan"   />
 
   <xacro:include filename="$(find xbot_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find xbot_description)/urdf/xbot-u.urdf.xacro" />

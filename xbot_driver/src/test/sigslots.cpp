@@ -23,7 +23,7 @@ public:
   {
     xbot::Parameters parameters;
     parameters.sigslots_namespace = "/mobile_base"; // configure the first part of the sigslot namespace
-    parameters.base_port = "/dev/xbot";         // the serial port to connect to (windows COM1..)
+    parameters.device_port = "/dev/xbot";         // the serial port to connect to (windows COM1..)
     // configure other parameters here
     xbot.init(parameters);
     slot_stream_data.connect("/mobile_base/stream_data");
@@ -45,7 +45,7 @@ public:
    */
   void processStreamData() {
     xbot::CoreSensors::Data data = xbot.getCoreSensorData();
-    std::cout << "Encoders [" <<  data.left_encoder << "," << data.right_encoder << "]" << std::endl;
+    std::cout << "Encoders [" <<  data.front_left_encoder << "," << data.front_right_encoder << "]" << std::endl;
   }
 
 private:

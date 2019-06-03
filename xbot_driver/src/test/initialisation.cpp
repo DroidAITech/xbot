@@ -16,7 +16,7 @@ public:
   XbotManager() {
     xbot::Parameters parameters;
     // change the default device port from /dev/xbot to /dev/ttyUSB0
-    parameters.base_port = "/dev/ttyUSB0";
+    parameters.device_port = "/dev/ttyUSB0";
     // Other parameters are typically happy enough as defaults
     // namespaces all sigslot connection names under this value, only important if you want to
     parameters.sigslots_namespace = "/xbot";

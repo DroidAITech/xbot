@@ -1,0 +1,34 @@
+<launch>
+	<!-- Xbot -->
+	<arg name="simulation"        default="false"   doc="set flags to indicate this xbot is run in simulation mode."/>
+	<arg name="serialport"        default="/dev/xbot"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+
+	<param name="/use_sim_time" value="$(arg simulation)"/>
+
+
+
+	<!-- Load the URDF/Xacro model of our robot -->
+	<arg name="urdf_file" default="$(find xacro)/xacro.py '$(find xbot_description)/urdf/robot.xacro'" />
+	<param name="robot_description" command="$(arg urdf_file)" />
+
+	<!-- state publisher -->
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+	<param name="publish_frequency" type="double" value="20.0" />
+	</node>
+
+	<!-- xbot driver -->
+	<include file="$(find xbot_bringup)/launch/includes/xbot.launch.xml">
+	<arg name="serialport" value="$(arg serialport)" />
+	<param name="sim" value="true"/>
+	</include>
+
+	<!-- rplidar -->
+	<include file="$(find xbot_bringup)/launch/sick.launch" />
+
+	<!-- rosbridge_server -->
+	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
+	<!-- camera pusher -->
+	<node name="camera_pusher" pkg="xbot_tools" type="camera_pusher" />
+
+</launch>

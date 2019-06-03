@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2012, Yujin Robot.
  * All rights reserved.
  *
@@ -55,7 +55,8 @@
 #include <std_msgs/Empty.h>
 #include <geometry_msgs/Twist.h>
 #include <xbot_msgs/InfraRed.h>
-#include <xbot_msgs/Echo.h>
+#include <xbot_msgs/Echos.h>
+
 namespace xbot
 {
 
@@ -77,10 +78,12 @@ public:
     Controller(),
     nh_(nh),
     name_(name),
-    bumper_front_pressed_(false),
-    bumper_rear_pressed_(false),
-    cliff_front_detected_(false),
-    cliff_rear_detected_(false),
+    bumper_left_pressed_(false),
+    bumper_center_pressed_(false),
+    bumper_right_pressed_(false),
+    cliff_left_detected_(false),
+    cliff_center_detected_(false),
+    cliff_right_detected_(false), 
     last_event_time_(ros::Time(0)),
     msg_(new geometry_msgs::Twist()){};
   ~SafetyController(){};
@@ -116,8 +119,8 @@ private:
   ros::Subscriber bumper_event_subscriber_, cliff_event_subscriber_;
   ros::Subscriber reset_safety_states_subscriber_;
   ros::Publisher controller_state_publisher_, velocity_command_publisher_;
-  bool bumper_front_pressed_, bumper_rear_pressed_;
-  bool cliff_front_detected_, cliff_rear_detected_;
+  bool bumper_left_pressed_, bumper_center_pressed_, bumper_right_pressed_;
+  bool cliff_left_detected_, cliff_center_detected_, cliff_right_detected_;
   ros::Duration time_to_extend_bump_cliff_events_;
   ros::Time last_event_time_;
 
@@ -139,7 +142,7 @@ private:
    * @brief Keeps track of bumps
    * @param msg incoming topic message
    */
-  void bumperEventCB(const xbot_msgs::EchoConstPtr msg);
+  void bumperEventCB(const xbot_msgs::EchosConstPtr msg);
 
   /**
    * @brief Keeps track of cliff detection
@@ -186,60 +189,78 @@ void SafetyController::disableCB(const std_msgs::EmptyConstPtr msg)
 
 void SafetyController::cliffEventCB(const xbot_msgs::InfraRedConstPtr msg)
 {
-  if (msg->front_hanged)
+  if (msg->front_left_hanged)
   {
     last_event_time_ = ros::Time::now();
     ROS_DEBUG_STREAM("Cliff detected. Moving backwards. [" << name_ << "]");
-    cliff_front_detected_   = true;
+    cliff_left_detected_   = true;
   }
   else{
-    cliff_front_detected_   = false;
+    cliff_left_detected_   = false;
   }
-  if (msg->rear_hanged)
+  if (msg->front_center_hanged)
   {
     last_event_time_ = ros::Time::now();
     ROS_DEBUG_STREAM("Cliff detected. Moving backwards. [" << name_ << "]");
-    cliff_rear_detected_   = true;
+    cliff_center_detected_   = true;
   }
   else{
-    cliff_rear_detected_ = false;
+    cliff_center_detected_ = false;
   }
-
+  if (msg->front_right_hanged)
+  {
+    last_event_time_ = ros::Time::now();
+    ROS_DEBUG_STREAM("Cliff detected. Moving backwards. [" << name_ << "]");
+    cliff_right_detected_   = true;
+  }
+  else{
+    cliff_right_detected_  = false;
+  }
 
 };
 
-void SafetyController::bumperEventCB(const xbot_msgs::EchoConstPtr msg)
+void SafetyController::bumperEventCB(const xbot_msgs::EchosConstPtr msg)
 {
-  if (msg->front_near)
+  if (msg->front_left_near)
   {
     last_event_time_ = ros::Time::now();
     ROS_DEBUG_STREAM("Bumper pressed. Moving backwards. [" << name_ << "]");
-    bumper_front_pressed_ = true;
+    bumper_left_pressed_ = true;
   }
   else{
-    bumper_front_pressed_   = false;
+    bumper_left_pressed_   = false;
   }
 
-  if (msg->rear_near)
+  if (msg->front_center_near)
   {
     last_event_time_ = ros::Time::now();
     ROS_DEBUG_STREAM("Bumper pressed. Moving backwards. [" << name_ << "]");
-    bumper_rear_pressed_ = true;
+    bumper_center_pressed_ = true;
   }
   else{
-    bumper_rear_pressed_   = false;
+    bumper_center_pressed_   = false;
   }
-
+  if (msg->front_right_near)
+  {
+    last_event_time_ = ros::Time::now();
+    ROS_DEBUG_STREAM("Bumper pressed. Moving backwards. [" << name_ << "]");
+    bumper_right_pressed_ = true;
+  }
+  else{
+    bumper_right_pressed_   = false;
+  }
 
 };
 
 
 void SafetyController::resetSafetyStatesCB(const std_msgs::EmptyConstPtr msg)
 {
-  bumper_front_pressed_   = false;
-  bumper_rear_pressed_ = false;
-  cliff_front_detected_   = false;
-  cliff_rear_detected_ = false;
+  bumper_left_pressed_   = false;
+  bumper_center_pressed_ = false;
+  bumper_right_pressed_  = false;
+  cliff_left_detected_   = false;
+  cliff_center_detected_ = false;
+  cliff_right_detected_  = false;
   ROS_WARN_STREAM("All safety states have been reset to false. [" << name_ << "]");
 }
 
@@ -247,7 +268,7 @@ void SafetyController::spin()
 {
   if (this->getState())
   {
-    if (bumper_front_pressed_ || cliff_front_detected_)
+    if (bumper_center_pressed_ || cliff_center_detected_)
     {
       msg_.reset(new geometry_msgs::Twist());
       msg_->linear.x = -0.1;
@@ -258,20 +279,32 @@ void SafetyController::spin()
       msg_->angular.z = 0.0;
       velocity_command_publisher_.publish(msg_);
     }
-    else if(cliff_rear_detected_|| bumper_rear_pressed_)
+    else if (bumper_left_pressed_ || cliff_left_detected_)
     {
+      // left bump/cliff; also spin a bit to the right to make escape easier
       msg_.reset(new geometry_msgs::Twist());
-      msg_->linear.x = 0.1;
+      msg_->linear.x = -0.1;
       msg_->linear.y = 0.0;
       msg_->linear.z = 0.0;
       msg_->angular.x = 0.0;
       msg_->angular.y = 0.0;
-      msg_->angular.z = 0;
+      msg_->angular.z = 0.4;
       velocity_command_publisher_.publish(msg_);
-
+    }
+    else if (bumper_right_pressed_ || cliff_right_detected_)
+    {
+      // right bump/cliff; also spin a bit to the left to make escape easier
+      msg_.reset(new geometry_msgs::Twist());
+      msg_->linear.x = -0.1;
+      msg_->linear.y = 0.0;
+      msg_->linear.z = 0.0;
+      msg_->angular.x = 0.0;
+      msg_->angular.y = 0.0;
+      msg_->angular.z = -0.4;
+      velocity_command_publisher_.publish(msg_);
     }
     //if we want to extend the safety state and we're within the time, just keep sending msg_
-    else if (time_to_extend_bump_cliff_events_ > ros::Duration(1e-10) &&
+    else if (time_to_extend_bump_cliff_events_ > ros::Duration(1e-10) && 
 	     ros::Time::now() - last_event_time_ < time_to_extend_bump_cliff_events_) {
       velocity_command_publisher_.publish(msg_);
     }

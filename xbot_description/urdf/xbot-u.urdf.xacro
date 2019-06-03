@@ -69,7 +69,7 @@
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="laser_mount_link"/>
-    <origin rpy="0 0 0" xyz=".120 0 .205"/>
+    <origin rpy="0 0 0" xyz=".114 0 .17"/>
   </joint>
 
   <link name="imu_link"/>
@@ -77,7 +77,7 @@
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin rpy="0 0 0" xyz="0.0454 -0.0157 1.1724"/>
+    <origin rpy="0 0 0" xyz="0 0 .2"/>
   </joint>
 
   <link name="left_wheel">
@@ -92,7 +92,7 @@
       <geometry>
         <mesh filename="package://xbot_description/models/meshes/wheel.dae" />
       </geometry>
-    </visual>
+    </visual>    
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0" />
       <mass value="4.3542" />
@@ -162,7 +162,7 @@
     <axis xyz="0 0 1"/>
     <parent link="base_link"/>
     <child link="yaw_platform"/>
-    <origin rpy="0 0 0" xyz="0 0 1.232"/>
+    <origin rpy="0 0 0" xyz="0 0 1.305"/>
     <limit effort="100" velocity="100" lower="-1.57" upper="1.57" />
     <dynamics damping="0.0" friction="10.0"/>
   </joint>
@@ -191,7 +191,7 @@
     <axis xyz="0 1 0"/>
     <parent link="yaw_platform"/>
     <child link="pitch_platform"/>
-    <origin rpy="0 0 0" xyz="0.0208 0 0.01325"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
     <limit effort="100" velocity="100" lower="-1.57" upper="1.57" />
     <dynamics damping="0.0" friction="10.0"/>
   </joint>

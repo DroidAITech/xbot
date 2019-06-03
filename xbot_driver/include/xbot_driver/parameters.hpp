@@ -36,8 +36,7 @@ class Parameters
 {
 public:
   Parameters() :
-    base_port("/dev/xbot"),
-    sensor_port("/dev/sensors"),
+    device_port("/dev/xbot"),
     sigslots_namespace("/xbot"),
     simulation(false),
     enable_acceleration_limiter(true),
@@ -48,8 +47,7 @@ public:
   {
   } /**< @brief Default constructor. **/
 
-  std::string base_port;        /**< @brief The serial device port name [/dev/xbot] **/
-  std::string sensor_port;
+  std::string device_port;         /**< @brief The serial device port name [/dev/xbot] **/
   std::string sigslots_namespace;  /**< @brief The first part of a sigslot connection namespace ["/xbot"] **/
   bool simulation;                 /**< @brief Whether to put the motors in loopback mode or not [false] **/
   bool enable_acceleration_limiter;/**< @brief Enable or disable the acceleration limiter [true] **/

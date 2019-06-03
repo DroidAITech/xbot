@@ -1,0 +1,6 @@
+bin
+build
+lib
+msg_gen
+src/xbot_msgs
+msg/AutoDocking*.msg

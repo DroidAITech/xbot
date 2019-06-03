@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2012, Yujin Robot.
  * All rights reserved.
  *
@@ -38,7 +38,6 @@
 *****************************************************************************/
 
 #include "xbot_node/xbot_ros.hpp"
-#include <math.h>
 
 /*****************************************************************************
  ** Namespaces
@@ -47,22 +46,50 @@
 namespace xbot
 {
 
-void XbotRos::processBaseStreamData() {
+void XbotRos::processStreamData() {
   publishWheelState();
-  publishCoreSensor();
+  publishSensorState();
+  publishDockIRData();
   publishEchoData();
   publishInfraredData();
-  publishStopButtonState();
-  publishBatteryState();
+  publishInertia();
+  publishRawInertia();
+  publishDebugSensors();
   publishRobotState();
 
 }
 
-
-
 /*****************************************************************************
 ** Publish Sensor Stream Workers
 *****************************************************************************/
+
+void XbotRos::publishSensorState()
+{
+  if ( ros::ok() ) {
+//      float heading = xbot.getHeading();
+
+//      ROS_ERROR("%f",heading);
+    if (sensor_state_publisher.getNumSubscribers() > 0) {
+      xbot_msgs::SensorState state;
+      CoreSensors::Data data = xbot.getCoreSensorData();
+      state.header.stamp = ros::Time::now();
+      state.battery_voltage = data.battery_voltage;
+      state.front_left_encoder = data.front_left_encoder;
+      state.front_right_encoder = data.front_right_encoder;
+      state.rear_left_encoder = data.rear_left_encoder;
+      state.rear_right_encoder = data.rear_right_encoder;
+      state.up_down_encoder = data.up_down_encoder;
+      state.up_down_current = data.up_down_current;
+      state.front_left_current = data.front_left_current;
+      state.front_right_current = data.front_right_current;
+      state.rear_left_current = data.rear_left_current;
+      state.rear_right_current = data.rear_right_current;
+
+      sensor_state_publisher.publish(state);
+    }
+  }
+}
+
 void XbotRos::publishWheelState()
 {
 
@@ -75,6 +102,8 @@ void XbotRos::publishWheelState()
     joint_states.position[0]=(double)left_joint_pos;
     joint_states.velocity[0]=left_joint_vel;
     joint_states.position[1]=(double)right_joint_pos;
+//    ROS_ERROR_STREAM("jointstates.position[0]:" << right_joint_pos);
+
     joint_states.velocity[1]=right_joint_vel;
 //    // Update and publish odometry and joint states
 //        ROS_ERROR_STREAM("imu_heading:" << xbot.getHeading());
@@ -88,35 +117,136 @@ void XbotRos::publishWheelState()
     }
 }
 
-void XbotRos::publishCoreSensor()
+void XbotRos::publishInertia()
 {
-  if ( ros::ok() ) {
-    if (core_sensor_publisher.getNumSubscribers() > 0) {
-      xbot_msgs::CoreSensor core_sensor;
-      CoreSensors::Data data = xbot.getCoreSensorData();
+  if (ros::ok())
+  {
+    if (imu_data_publisher.getNumSubscribers() > 0)
+    {
+      // Publish as shared pointer to leverage the nodelets' zero-copy pub/sub feature
+      sensor_msgs::ImuPtr msg(new sensor_msgs::Imu);
 
-      core_sensor.header.stamp = ros::Time::now();
-      core_sensor.left_encoder = data.left_encoder;
-      core_sensor.right_encoder = data.right_encoder;
-      core_sensor.battery_percent = data.power_percent;
-      core_sensor.ischarging = data.is_charging;
-      core_sensor.front_echo = data.front_echo;
-      core_sensor.rear_echo = data.rear_echo;
-      core_sensor.front_infrared = data.front_infrared;
-      core_sensor.rear_infrared = data.rear_infrared;
-      core_sensor.error_state = data.error_state;
-      core_sensor.left_motor_current =data.left_motor_current;
-      core_sensor.right_motor_current = data.right_motor_current;
-      core_sensor.motor_disabled = data.stop_button_state;
-      core_sensor.time_stamp = data.timestamp;
-      core_sensor.version = data.version;
+      msg->header.frame_id = "gyro_link";
+      msg->header.stamp = ros::Time::now();
 
-      core_sensor_publisher.publish(core_sensor);
+      msg->orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 0.0, xbot.getHeading());
 
 
+      // set a non-zero covariance on unused dimensions (pitch and roll); this is a requirement of robot_pose_ekf
+      // set yaw covariance as very low, to make it dominate over the odometry heading when combined
+      // 1: fill once, as its always the same;  2: using an invented value; cannot we get a realistic estimation?
+      msg->orientation_covariance[0] = DBL_MAX;
+      msg->orientation_covariance[4] = DBL_MAX;
+      msg->orientation_covariance[8] = 0.05;
 
+      // fill angular velocity; we ignore acceleration for now
+      msg->angular_velocity.z = xbot.getAngularVelocity();
+
+      // angular velocity covariance; useless by now, but robot_pose_ekf's
+      // roadmap claims that it will compute velocities in the future
+      msg->angular_velocity_covariance[0] = DBL_MAX;
+      msg->angular_velocity_covariance[4] = DBL_MAX;
+      msg->angular_velocity_covariance[8] = 0.05;
+
+      imu_data_publisher.publish(msg);
     }
   }
+}
+
+void XbotRos::publishRawInertia()
+{
+  if ( ros::ok() && (raw_imu_data_publisher.getNumSubscribers() > 0) )
+  {
+    // Publish as shared pointer to leverage the nodelets' zero-copy pub/sub feature
+    xbot_msgs::ImuNinePtr msg(new xbot_msgs::ImuNine);
+    msg->accex = xbot.getCoreSensorData().acce_x;
+    msg->gyrox = xbot.getCoreSensorData().gyro_x;
+    msg->magx = xbot.getCoreSensorData().mag_x;
+    msg->accey = xbot.getCoreSensorData().acce_y;
+    msg->gyroy = xbot.getCoreSensorData().gyro_y;
+    msg->magy = xbot.getCoreSensorData().mag_y;
+    msg->accez = xbot.getCoreSensorData().acce_z;
+    msg->gyroz = xbot.getCoreSensorData().gyro_z;
+    msg->magz = xbot.getCoreSensorData().mag_z;
+
+    raw_imu_data_publisher.publish(msg);
+  }
+}
+
+void XbotRos::publishDebugSensors()
+{
+    ros::Rate r(50);
+    if ( ros::ok() && (debug_sensors_publisher.getNumSubscribers() > 0) )
+    {
+        xbot_msgs::DebugSensorPtr msg(new xbot_msgs::DebugSensor);
+        CoreSensors::Data data_debug = xbot.getCoreSensorData();
+
+        msg->header.frame_id = "encoder";
+        msg->header.stamp = ros::Time::now();
+        msg->data.push_back(data_debug.front_left_encoder);
+        msg->data.push_back(data_debug.front_right_encoder);
+        msg->heading=xbot.getHeading();
+        debug_sensors_publisher.publish(msg);
+        r.sleep();
+
+    }
+
+}
+
+void XbotRos::publishRobotState()
+{
+//    ros::Rate r(50);
+    if ( ros::ok() && (robot_state_publisher.getNumSubscribers() > 0) )
+    {
+        xbot_msgs::XbotStatePtr msg(new xbot_msgs::XbotState);
+        CoreSensors::Data data = xbot.getCoreSensorData();
+        msg->header.stamp = ros::Time::now();
+        msg->power_percent = (data.battery_voltage - xbot_msgs::XbotState::MIN_VOLTAGE)*100/(xbot_msgs::XbotState::MAX_VOLTAGE - xbot_msgs::XbotState::MIN_VOLTAGE);
+        msg->height_percent = xbot.getHeightPercent();
+        msg->cloud_degree = xbot.getPlatformDegree();
+        msg->camera_degree = xbot.getCameraDegree();
+        msg->dock_left_infred = data.dock_left_infred;
+        msg->dock_right_infred = data.dock_right_infred;
+        msg->front_left_hanged = (data.front_left_infred<1000);
+        msg->front_center_hanged = (data.front_center_infred<1000);
+        msg->front_right_hanged = (data.front_right_infred<1000);
+        msg->rear_left_hanged = (data.rear_left_infred<1000);
+        msg->rear_center_hanged = (data.rear_center_infred<1000);
+        msg->rear_right_hanged = (data.rear_right_infred<1000);
+        msg->is_hanged = msg->front_left_hanged&&msg->front_center_hanged&&msg->front_right_hanged&&msg->rear_left_hanged&&msg->rear_center_hanged&&msg->rear_right_hanged;
+        msg->front_left_near = (data.front_left_echo<1300);
+        msg->front_center_near = (data.front_center_echo<1300);
+        msg->front_right_near = (data.front_right_echo<1300);
+        msg->rear_left_near = (data.rear_left_echo<1300);
+        msg->rear_center_near = (data.rear_center_echo<1300);
+        msg->rear_right_near = (data.rear_right_echo<1300);
+        msg->is_obstacle = msg->front_left_near&&msg->front_center_near&&msg->front_right_near&&msg->rear_left_near&&msg->rear_center_near&&msg->rear_right_near;
+
+        robot_state_publisher.publish(msg);
+//        r.sleep();
+
+    }
+
+}
+
+void XbotRos::publishDockIRData()
+{
+    if (ros::ok())
+    {
+        if (dock_ir_publisher.getNumSubscribers() > 0)
+        {
+
+            // Publish as shared pointer to leverage the nodelets' zero-copy pub/sub feature
+            xbot_msgs::DockInfraRedPtr msg(new xbot_msgs::DockInfraRed);
+            CoreSensors::Data data_infred = xbot.getCoreSensorData();
+            msg->header.frame_id = "dock_ir_link";
+            msg->header.stamp = ros::Time::now();
+            msg->rear_left_infred=(data_infred.rear_left_infred<=0.07)?1:8;
+            msg->rear_center_infred=(data_infred.rear_center_infred<=0.2)?2:16;
+            msg->rear_right_infred=(data_infred.rear_right_infred<=0.07)?4:32;
+            dock_ir_publisher.publish(msg);
+        }
+    }
 }
 
 void XbotRos::publishEchoData()
@@ -125,14 +255,28 @@ void XbotRos::publishEchoData()
   {
     if(echo_data_publisher.getNumSubscribers()>0)
     {
-      xbot_msgs::Echo msg;
+      xbot_msgs::Echos msg;
       CoreSensors::Data data_echo = xbot.getCoreSensorData();
       msg.header.frame_id = "echo_link";
       msg.header.stamp = ros::Time::now();
-      msg.front = data_echo.front_echo;
-      msg.rear = data_echo.rear_echo;
-      msg.front_near = (data_echo.front_echo<1600);
-      msg.rear_near = (data_echo.rear_echo<1600);
+      msg.front_left = data_echo.front_left_echo;
+      msg.front_center = data_echo.front_center_echo;
+      msg.front_right = data_echo.front_right_echo;
+      msg.rear_left = data_echo.rear_left_echo;
+      msg.rear_center = data_echo.rear_center_echo;
+      msg.rear_right = data_echo.rear_right_echo;
+      msg.front_left_near = (data_echo.front_left_echo<1300);
+      msg.front_center_near = (data_echo.front_center_echo<1300);
+      msg.front_right_near = (data_echo.front_right_echo<1300);
+      msg.rear_left_near = (data_echo.rear_left_echo<1300);
+      msg.rear_center_near = (data_echo.rear_center_echo<1300);
+      msg.rear_right_near = (data_echo.rear_right_echo<1300);
+
+
+//      int near_left = (data_echo.front_left_echo<=0.07)?1:0;
+//      int near_center = (data_echo.front_center_echo<=0.2)?2:0;
+//      int near_right = (data_echo.front_right_echo<=0.07)?4:0;
+//      msg->near = near_left+near_center+near_right;
       echo_data_publisher.publish(msg);
 
     }
@@ -141,7 +285,6 @@ void XbotRos::publishEchoData()
 
 
 }
-
 void XbotRos::publishInfraredData()
 {
   if(ros::ok())
@@ -152,244 +295,23 @@ void XbotRos::publishInfraredData()
       CoreSensors::Data data_core = xbot.getCoreSensorData();
       msg.header.frame_id = "infrared_link";
       msg.header.stamp = ros::Time::now();
-      msg.front = data_core.front_infrared;
-      msg.rear = data_core.rear_infrared;
-      msg.front_hanged = (data_core.front_infrared>2000);
-      msg.rear_hanged = (data_core.rear_infrared>2000);
+      msg.front_left = data_core.front_left_infred;
+      msg.front_center = data_core.front_center_infred;
+      msg.front_right = data_core.front_right_infred;
+      msg.rear_left = data_core.rear_left_infred;
+      msg.rear_center = data_core.rear_center_infred;
+      msg.rear_right = data_core.rear_right_infred;
+      msg.front_left_hanged = (data_core.front_left_infred<1000);
+      msg.front_center_hanged = (data_core.front_center_infred<1000);
+      msg.front_right_hanged = (data_core.front_right_infred<1000);
+      msg.rear_left_hanged = (data_core.rear_left_infred<1000);
+      msg.rear_center_hanged = (data_core.rear_center_infred<1000);
+      msg.rear_right_hanged = (data_core.rear_right_infred<1000);
+
+
       infrared_data_publisher.publish(msg);
     }
   }
 }
-
-void XbotRos::publishStopButtonState()
-{
-  if(ros::ok())
-  {
-    if(stop_buttom_state_publisher.getNumSubscribers()>0)
-    {
-      std_msgs::Bool msg;
-      CoreSensors::Data data_core = xbot.getCoreSensorData();
-      msg.data = data_core.stop_button_state;
-      stop_buttom_state_publisher.publish(msg);
-    }
-  }
-
-
-}
-
-void XbotRos::publishBatteryState()
-{
-  if(ros::ok())
-  {
-//    if(battery_state_publisher.getNumSubscribers()>0)
-//    {
-      xbot_msgs::Battery msg;
-      CoreSensors::Data data_core = xbot.getCoreSensorData();
-      msg.header.stamp = ros::Time::now();
-      msg.is_charging = data_core.is_charging;
-
-      msg.battery_percent = data_core.power_percent;
-      battery_state_publisher.publish(msg);
-
-      if(led_indicate_battery)
-      {
-        unsigned char leds = msg.battery_percent/25+1;
-        leds = pow(2,leds)-1;
-        xbot.setLedControl(leds);
-      }
-
-
-
-//    }
-  }
-
-}
-
-void XbotRos::publishRobotState()
-{
-//    ros::Rate r(50);
-    if ( ros::ok() && (robot_state_publisher.getNumSubscribers() > 0) )
-    {
-        xbot_msgs::XbotState msg;
-        CoreSensors::Data core_data = xbot.getCoreSensorData();
-        Sensors::Data extra_data = xbot.getExtraSensorsData();
-        msg.header.stamp = ros::Time::now();
-        msg.base_is_connected = xbot.is_base_connected();
-        msg.sensor_is_connected = xbot.is_sensor_connected();
-        msg.echo_plug_error = core_data.error_state;
-        msg.infrared_plug_error = core_data.error_state;
-        msg.motor_error = core_data.error_state;
-        msg.version = core_data.version;
-
-
-        robot_state_publisher.publish(msg);
-//        r.sleep();
-
-    }
-
-}
-
-
-void XbotRos::processSensorStreamData()
-{
-  publishExtraSensor();
-  publishInertia();
-  publishRawInertia();
-  publishPitchPlatformState();
-  publishYawPlatformState();
-  publishSoundState();
-
-}
-void XbotRos::publishExtraSensor()
-{
-  if ( ros::ok() ) {
-    if (extra_sensor_publisher.getNumSubscribers() > 0) {
-      xbot_msgs::ExtraSensor extra_sensor;
-
-      Sensors::Data data = xbot.getExtraSensorsData();
-
-      extra_sensor.header.stamp = ros::Time::now();
-
-      extra_sensor.yaw_platform_degree = data.yaw_platform_degree;
-      extra_sensor.pitch_platform_degree = data.pitch_platform_degree;
-      extra_sensor.sound_is_mutex = data.sound_status;
-      extra_sensor.acc_x = data.acc_x;
-      extra_sensor.acc_y = data.acc_y;
-      extra_sensor.acc_z = data.acc_z;
-      extra_sensor.gyro_x = data.gyro_x;
-      extra_sensor.gyro_y = data.gyro_y;
-      extra_sensor.gyro_z = data.gyro_z;
-      extra_sensor.mag_x = data.mag_x;
-      extra_sensor.mag_y = data.mag_y;
-      extra_sensor.mag_z = data.mag_z;
-      extra_sensor.yaw = data.yaw;
-      extra_sensor.pitch = data.pitch;
-      extra_sensor.roll = data.roll;
-      extra_sensor.q1 = data.q1;
-      extra_sensor.q2 = data.q2;
-      extra_sensor.q3 = data.q3;
-      extra_sensor.q4 = data.q4;
-      extra_sensor.error_state = data.error_status;
-      extra_sensor.time_stamp = data.timestamp;
-      extra_sensor.version = data.version;
-      extra_sensor_publisher.publish(extra_sensor);
-
-
-    }
-  }
-
-}
-
-void XbotRos::publishInertia()
-{
-  if ( ros::ok() ) {
-
-    sensor_msgs::Imu imu_msg;
-
-    Sensors::Data data = xbot.getExtraSensorsData();
-    imu_msg.header.stamp = ros::Time::now();
-    imu_msg.header.frame_id = "imu_link";
-    imu_msg.orientation = tf::createQuaternionMsgFromYaw(-xbot.getHeading());
-    imu_msg.orientation_covariance[0] = 10.01;
-    imu_msg.orientation_covariance[4] = 10.01;
-    imu_msg.orientation_covariance[8] = 10.01;
-
-    imu_msg.angular_velocity.x = data.gyro_x;
-    imu_msg.angular_velocity.y = data.gyro_y;
-    imu_msg.angular_velocity.z = -data.gyro_z;
-    imu_msg.angular_velocity_covariance[0] = 10.01;
-    imu_msg.angular_velocity_covariance[4] = 10.01;
-    imu_msg.angular_velocity_covariance[8] = 10.01;
-
-    imu_msg.linear_acceleration.x = data.acc_x;
-    imu_msg.linear_acceleration.y = data.acc_y;
-    imu_msg.linear_acceleration.z = data.acc_z;
-    imu_msg.linear_acceleration_covariance[0] = 0.01;
-    imu_msg.linear_acceleration_covariance[4] = 0.01;
-    imu_msg.linear_acceleration_covariance[8] = 0.01;
-
-    imu_data_publisher.publish(imu_msg);
-
-
-  }
-}
-
-void XbotRos::publishRawInertia()
-{
-  if ( ros::ok() ) {
-    if (raw_imu_data_publisher.getNumSubscribers() > 0) {
-      xbot_msgs::RawImu raw_imu_msg;
-
-      Sensors::Data data = xbot.getExtraSensorsData();
-
-      raw_imu_msg.header.stamp = ros::Time::now();
-      raw_imu_msg.acc_x = data.acc_x;
-      raw_imu_msg.acc_y = data.acc_y;
-      raw_imu_msg.acc_z = data.acc_z;
-      raw_imu_msg.gyro_x = data.gyro_x;
-      raw_imu_msg.gyro_y = data.gyro_y;
-      raw_imu_msg.gyro_z = data.gyro_z;
-      raw_imu_msg.mag_x = data.mag_x;
-      raw_imu_msg.mag_y = data.mag_y;
-      raw_imu_msg.mag_z = data.mag_z;
-      raw_imu_data_publisher.publish(raw_imu_msg);
-
-
-    }
-  }
-}
-
-void XbotRos::publishYawPlatformState()
-{
-  if(ros::ok())
-  {
-    if(yaw_platform_state_publisher.getNumSubscribers()>0)
-    {
-      std_msgs::Int8 yaw_platform_degree;
-      Sensors::Data data = xbot.getExtraSensorsData();
-      yaw_platform_degree.data = data.yaw_platform_degree-120;
-
-      yaw_platform_state_publisher.publish(yaw_platform_degree);
-    }
-  }
-
-}
-
-void XbotRos::publishPitchPlatformState()
-{
-  if(ros::ok())
-  {
-    if(pitch_platform_state_publisher.getNumSubscribers()>0)
-    {
-      std_msgs::Int8 pitch_platform_degree;
-      Sensors::Data data = xbot.getExtraSensorsData();
-      pitch_platform_degree.data = data.pitch_platform_degree-120;
-
-      pitch_platform_state_publisher.publish(pitch_platform_degree);
-    }
-  }
-
-}
-
-void XbotRos::publishSoundState()
-{
-  if(ros::ok())
-  {
-    if(sound_state_publisher.getNumSubscribers()>0)
-    {
-      std_msgs::Bool sound_is_mute;
-      Sensors::Data data = xbot.getExtraSensorsData();
-      sound_is_mute.data = data.sound_status;
-
-      sound_state_publisher.publish(sound_is_mute);
-    }
-  }
-
-}
-
-
-
-
-
 
 } // namespace xbot

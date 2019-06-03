@@ -55,7 +55,3 @@ add_subdirectory(src)
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
-install(DIRECTORY scripts
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-

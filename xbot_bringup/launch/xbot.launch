@@ -1,9 +1,7 @@
 <launch>
 	<!-- Xbot -->
 	<arg name="simulation"        default="false"   doc="set flags to indicate this xbot is run in simulation mode."/>
-	<arg name="base_port"        default="/dev/xbot"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
-
-	<arg name="sensor_port"        default="/dev/sensor"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+	<arg name="serialport"        default="/dev/xbot"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
 
 	<param name="/use_sim_time" value="$(arg simulation)"/>
 
@@ -21,12 +19,9 @@
 
 	<!-- xbot driver -->
 	<include file="$(find xbot_bringup)/launch/includes/xbot.launch.xml">
-	<arg name="base_port" value="$(arg base_port)" />
-	<arg name="sensor_port" value="$(arg sensor_port)" />
-	<param name="sim" value="false"/>
+	<arg name="serialport" value="$(arg serialport)" />
+	<param name="sim" value="true"/>
 	</include>
-
-	<!-- <node name ="led_show" pkg="xbot_tools" type="pub_topic.py" /> -->
 
 
 

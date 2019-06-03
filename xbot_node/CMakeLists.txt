@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(xbot_node)
 find_package(catkin REQUIRED COMPONENTS rospy roscpp nodelet pluginlib tf angles
                                         geometry_msgs sensor_msgs nav_msgs std_msgs
-                                        xbot_msgs xbot_driver 
+                                        xbot_msgs xbot_driver xbot_keyop 
                                         ecl_exceptions ecl_sigslots ecl_streams ecl_threads)
 
 catkin_package(
@@ -10,7 +10,7 @@ catkin_package(
    LIBRARIES xbot_ros xbot_nodelet
    CATKIN_DEPENDS rospy roscpp nodelet pluginlib tf angles
                   geometry_msgs sensor_msgs nav_msgs std_msgs
-                  xbot_msgs xbot_driver
+                  xbot_msgs xbot_driver xbot_keyop 
                   ecl_exceptions ecl_sigslots ecl_streams ecl_threads
 )
 
@@ -28,6 +28,9 @@ install(DIRECTORY launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 install(DIRECTORY param
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(DIRECTORY image
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 install(PROGRAMS scripts/getOdom2D.py

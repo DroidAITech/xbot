@@ -4,10 +4,13 @@
   <description>
       ROS nodelet for Xbot: ROS wrapper for the Xbot driver.
   </description>
-  <author>Roc</author>
-  <author>yowlings@buaa.edu.cn</author>
-  <maintainer email="yowlings@buaa.edu.cn">Roc</maintainer>
-  <license>LGPL</license>  
+  <author>Daniel Stonier</author>
+  <author>Younghun Ju</author>
+  <author>Jorge Santos Simon</author>
+  <maintainer email="stonier@yujinrobot.com">Daniel Stonier</maintainer>
+  <license>BSD</license>
+  <url type="bugtracker">https://github.com/yujinrobot/xbot/issues</url>
+  <url type="repository">https://github.com/yujinrobot/xbot</url>
   <url type="website">http://ros.org/wiki/xbot_node</url>
 
   <buildtool_depend>catkin</buildtool_depend>

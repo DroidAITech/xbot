@@ -1,0 +1,10 @@
+<launch>
+	<!--sensor asus depth camera-->
+	<include file="$(find xbot_bringup)/launch/includes/sensor.launch">
+	<arg name="rgb_processing" default="false" />
+	<arg name="depth_registration" default="false" />
+	<arg name="depth_processing" default="false" />
+	<arg name="scan_topic" default="/asus_scan" />
+	<arg name = "3d_sensor" value = "asus_xtion_pro"/>
+	</include>
+</launch>

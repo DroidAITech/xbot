@@ -1,0 +1,48 @@
+<package>
+  <name>xbot_keyop</name>
+  <version>0.6.7</version>
+  <description>
+    Keyboard teleoperation for Xbot: relays commands from a keyboard to Xbot.
+  </description>
+  <author email="stonier@yujinrobot.com">Daniel Stonier</author>
+  <maintainer email="stonier@yujinrobot.com">Daniel Stonier</maintainer>
+  <license>BSD</license>
+  <url type="bugtracker">https://github.com/yujinrobot/xbot/issues</url>
+  <url type="repository">https://github.com/yujinrobot/xbot</url>
+  <url type="website">http://ros.org/wiki/xbot_keyop</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Ros -->
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+
+  <!-- Ecl -->
+  <build_depend>ecl_exceptions</build_depend>
+  <build_depend>ecl_threads</build_depend>
+  <build_depend>ecl_time</build_depend>
+
+  <!-- Xbot -->
+  <build_depend>xbot_msgs</build_depend>
+
+
+  <!-- Ros -->
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>std_srvs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+
+  <!-- Ecl -->
+  <run_depend>ecl_exceptions</run_depend>
+  <run_depend>ecl_threads</run_depend>
+  <run_depend>ecl_time</run_depend>
+
+  <!-- Xbot -->
+  <run_depend>xbot_msgs</run_depend>
+  
+  <!-- Yujin ocs -->
+  <run_depend>yocs_cmd_vel_mux</run_depend>
+  <run_depend>yocs_velocity_smoother</run_depend>
+</package>

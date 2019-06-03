@@ -9,6 +9,9 @@
   <author email="yowlings@gmail.com">Roc Wang</author>
   <maintainer email="yowlings@gmail.com">Roc Wang</maintainer>
   <license>BSD</license>
+  <url type="website">http://ros.org/wiki/xbot_msgs</url>
+  <url type="repository">https://github.com/yujinrobot/xbot_msgs</url>
+  <url type="bugtracker">https://github.com/yujinrobot/xbot_msgs/issues</url>
   
   <buildtool_depend>catkin</buildtool_depend>
 

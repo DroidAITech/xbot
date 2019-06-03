@@ -1,14 +1,10 @@
 <?xml version="1.0"?>
 <package>
   <name>xbot_bringup</name>
-  <version>1.2.1</version>
+  <version>0.0.0</version>
   <description>The xbot_bringup package</description>
-  <author>Roc</author>
-  <author>yowlings@buaa.edu.cn</author>
-  <author>Changkun</author>
-  <maintainer email="chaichangkun@163.com">Chai Changkun</maintainer>
-  <maintainer email="yowlings@buaa.edu.cn">Roc</maintainer>
-  <license>LGPL</license>
+  <maintainer email="roc@todo.todo">roc</maintainer>
+  <license>TODO</license>
   <build_depend>message_generation</build_depend>
   <run_depend>message_runtime</run_depend>
   <buildtool_depend>catkin</buildtool_depend>

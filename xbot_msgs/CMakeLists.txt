@@ -3,20 +3,26 @@ project(xbot_msgs)
 find_package(catkin REQUIRED COMPONENTS std_msgs actionlib_msgs message_generation)
 
 add_message_files(DIRECTORY msg
-				FILES 
-				CoreSensor.msg
-				ExtraSensor.msg
-				Echo.msg
-				InfraRed.msg
-				RawImu.msg
-				Battery.msg
-				KeyboardInput.msg
-				XbotState.msg
-				)
+                      FILES 
+                      SensorState.msg
+                      DebugSensor.msg
+                      DockInfraRed.msg
+                      KeyboardInput.msg
+                      CloudCamera.msg
+                      XbotState.msg
+                      Lift.msg
+                      Power.msg
+                      ImuNine.msg
+                      ImuYRP.msg
+                      Echos.msg
+                      InfraRed.msg
+                      NaviState.msg
+                      FaceResult.msg
+                 )
 
 add_action_files(DIRECTORY action
-					FILES AutoDocking.action
-				)
+                     FILES AutoDocking.action
+                )
 
 generate_messages(DEPENDENCIES std_msgs actionlib_msgs)
 

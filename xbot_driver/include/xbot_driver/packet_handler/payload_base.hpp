@@ -78,10 +78,6 @@ public:
   // todo; let's put more useful converters here. Or we may use generic converters
 protected:
   // below funciton should be replaced wiht converter
-  //###########################################################
-  //#数据在计算机内存中存储是高位在前，低位在后，int型10存储为：00000000000000000000000000001010
-  //#数据在串口传输过程中是低位在前，高位在后,因而10存储为00001010000000000000000000000000
-  //###########################################################
   template<typename T>
     void buildVariable(T & V, ecl::PushAndPop<unsigned char> & buffer)
     {

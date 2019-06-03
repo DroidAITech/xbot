@@ -30,7 +30,7 @@ class Header {
 public:
   enum PayloadType {
   // Streamed payloads
-  CoreSensors = 16, Sensors = 17
+  CoreSensors = 16, ImuSensors = 17
   };
 };
 

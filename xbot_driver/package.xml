@@ -1,12 +1,17 @@
 <package>
   <name>xbot_driver</name>
-  <version>1.2.1</version>
-  <description>C++ driver library for xbot:
-    Pure C++ driver library for xbot. This is for those who do not wish to use ROS on their systems.</description>
-  <author>Roc</author>
-  <author>yowlings@buaa.edu.cn</author>
-  <maintainer email="yowlings@buaa.edu.cn">Roc</maintainer>
-  <license>LGPL</license>  
+  <version>0.6.4</version>
+  <description>
+    C++ driver library for xbot:
+    Pure C++ driver library for xbot. This is for those who do not wish to use ROS on their systems.
+  </description>
+  <author email="stonier@yujinrobot.com">Daniel Stonier</author>
+  <author email="yhju@yujinrobot.com">Younghun Ju</author>
+  <author email="jorge@yujinrobot.com">Jorge Santos Simon</author>
+  <maintainer email="stonier@yujinrobot.com">Daniel Stonier</maintainer>
+  <license>BSD</license>
+  <url type="bugtracker">https://github.com/yujinrobot/xbot_core/issues</url>
+  <url type="repository">https://github.com/yujinrobot/xbot_core</url>
   <url type="website">http://ros.org/wiki/xbot_driver</url>
 
   <buildtool_depend>catkin</buildtool_depend>

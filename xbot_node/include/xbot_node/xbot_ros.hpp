@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2012, Yujin Robot.
  * All rights reserved.
  *
@@ -49,31 +49,24 @@
 
 #include <ros/ros.h>
 #include <angles/angles.h>
-
 #include <std_msgs/Empty.h>
 #include <std_msgs/String.h>
-#include <std_msgs/Bool.h>
-#include <std_msgs/Int8.h>
-#include <std_msgs/UInt8.h>
 #include <std_msgs/Int16MultiArray.h>
-
 #include <sensor_msgs/JointState.h>
 #include <sensor_msgs/Imu.h>
-
 #include <ecl/sigslots.hpp>
-
-#include <xbot_msgs/CoreSensor.h>
-#include <xbot_msgs/ExtraSensor.h>
-#include <xbot_msgs/Echo.h>
+#include <xbot_msgs/DockInfraRed.h>
+#include <xbot_msgs/SensorState.h>
+#include <xbot_msgs/DebugSensor.h>
+#include <xbot_msgs/Echos.h>
 #include <xbot_msgs/InfraRed.h>
-#include <xbot_msgs/Battery.h>
-
-
 #include <xbot_driver/xbot.hpp>
+#include <xbot_msgs/CloudCamera.h>
+#include <xbot_msgs/Lift.h>
 #include <xbot_msgs/XbotState.h>
-#include <xbot_msgs/RawImu.h>
-
-#include <geometry_msgs/Quaternion.h>
+#include <xbot_msgs/ImuNine.h>
+#include <xbot_msgs/Power.h>
+#include <xbot_msgs/ImuNine.h>
 #include "odometry.hpp"
 
 /*****************************************************************************
@@ -100,40 +93,29 @@ private:
   sensor_msgs::JointState joint_states;
   Odometry odometry;
   bool cmd_vel_timed_out_; // stops warning spam when cmd_vel flags as timed out more than once in a row
-  bool base_serial_timed_out_; // stops warning spam when serial connection timed out more than once in a row
-  bool sensor_serial_timed_out_;
-
-  bool led_indicate_battery;
+  bool serial_timed_out_; // stops warning spam when serial connection timed out more than once in a row
 
   /*********************
-   ** Ros Publishers
+   ** Ros Comms
    **********************/
-  ros::Publisher core_sensor_publisher;
-  ros::Publisher extra_sensor_publisher;
-  ros::Publisher yaw_platform_state_publisher;
-  ros::Publisher pitch_platform_state_publisher;
-  ros::Publisher battery_state_publisher;
-  ros::Publisher stop_buttom_state_publisher;
-  ros::Publisher sound_state_publisher;
   ros::Publisher imu_data_publisher;
   ros::Publisher raw_imu_data_publisher;
+  ros::Publisher sensor_state_publisher;
+  ros::Publisher joint_state_publisher;
+  ros::Publisher dock_ir_publisher;
   ros::Publisher infrared_data_publisher;
   ros::Publisher echo_data_publisher;
-  ros::Publisher joint_state_publisher;
+  ros::Publisher raw_control_command_publisher;
+
+  ros::Publisher debug_sensors_publisher;
   ros::Publisher robot_state_publisher;
 
-
-  /*********************
-   ** Ros Subscribers
-   **********************/
-  ros::Subscriber motor_enable_command_subscriber;
   ros::Subscriber velocity_command_subscriber;
-  ros::Subscriber yaw_platform_command_subscriber;
-  ros::Subscriber pitch_platform_command_subscriber;
-  ros::Subscriber sound_command_subscriber;
-  ros::Subscriber led_command_subscriber;
   ros::Subscriber lift_command_subscirber;
+  ros::Subscriber cloudplatform_command_subscriber;
+  ros::Subscriber power_command_subscriber;
   ros::Subscriber reset_odometry_subscriber;
+  ros::Subscriber cloud_camera_subscriber;
 
   void advertiseTopics(ros::NodeHandle& nh);
   void subscribeTopics(ros::NodeHandle& nh);
@@ -141,43 +123,29 @@ private:
   /*********************
   ** Ros Callbacks
   **********************/
-  void subscribeMotorEnableCommand(const std_msgs::Bool);
   void subscribeVelocityCommand(const geometry_msgs::TwistConstPtr);
-  void subscribeYawPlatformCommand(const std_msgs::Int8);
-  void subscribePitchPlatformCommand(const std_msgs::Int8);
-  void subscribeSoundCommand(const std_msgs::Bool);
-  void subscribeLedCommand(const std_msgs::UInt8);
-  void subscribeLiftCommand(const std_msgs::UInt8);
+  void subscribeLiftCommand(const xbot_msgs::LiftConstPtr);
+  void subscribeCloudCameraCommand(const xbot_msgs::CloudCameraConstPtr);
   void subscribeResetOdometry(const std_msgs::EmptyConstPtr);
+  void subscribePowerCommand(const xbot_msgs::PowerConstPtr);
 
   /*********************
    ** SigSlots
    **********************/
-  ecl::Slot<> base_slot_stream_data;
-  ecl::Slot<> sensor_slot_stream_data;
+  ecl::Slot<> slot_stream_data;
 
   /*********************
-   ** Base Slot Callbacks
+   ** Slot Callbacks
    **********************/
-  void processBaseStreamData();
   void publishWheelState();
-  void publishCoreSensor();
-  void publishEchoData();
-  void publishInfraredData();
-  void publishBatteryState();
-  void publishStopButtonState();
-
-
-  /*********************
-   ** Sensor Slot Callbacks
-   **********************/
-  void processSensorStreamData();
-  void publishExtraSensor();
-  void publishYawPlatformState();
-  void publishPitchPlatformState();
-  void publishSoundState();
+  void processStreamData();
   void publishInertia();
   void publishRawInertia();
+  void publishSensorState();
+  void publishDockIRData();
+  void publishEchoData();
+  void publishInfraredData();
+  void publishDebugSensors();
   void publishRobotState();
 
 

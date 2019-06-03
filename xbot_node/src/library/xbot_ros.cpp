@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2012, Yujin Robot.
  * All rights reserved.
  *
@@ -58,9 +58,8 @@ namespace xbot
  * Make sure you call the init() method to fully define this node.
  */
 XbotRos::XbotRos(std::string& node_name) :
-    name(node_name),cmd_vel_timed_out_(false), base_serial_timed_out_(false),sensor_serial_timed_out_(false),
-    base_slot_stream_data(&XbotRos::processBaseStreamData, *this),
-    sensor_slot_stream_data(&XbotRos::processSensorStreamData, *this)
+    name(node_name), cmd_vel_timed_out_(false), serial_timed_out_(false),
+    slot_stream_data(&XbotRos::processStreamData, *this)
 {
 
 
@@ -73,8 +72,6 @@ XbotRos::XbotRos(std::string& node_name) :
 XbotRos::~XbotRos()
 {
   ROS_INFO_STREAM("Xbot : waiting for xbot thread to finish [" << name << "].");
-  xbot.setSoundEnableControl(false);
-  xbot.setLedControl(0);
 }
 
 bool XbotRos::init(ros::NodeHandle& nh)
@@ -88,8 +85,7 @@ bool XbotRos::init(ros::NodeHandle& nh)
   /*********************
    ** Slots
    **********************/
-  base_slot_stream_data.connect(name + std::string("/base_stream_data"));
-  sensor_slot_stream_data.connect(name + std::string("/sensor_stream_data"));
+  slot_stream_data.connect(name + std::string("/stream_data"));
   /*********************
    ** Driver Parameters
    **********************/
@@ -97,18 +93,10 @@ bool XbotRos::init(ros::NodeHandle& nh)
 
   nh.param("acceleration_limiter", parameters.enable_acceleration_limiter, false);
 
-  nh.param("led_indicate_battery", led_indicate_battery, true);
-
   parameters.sigslots_namespace = name; // name is automatically picked up by device_nodelet parent.
-  if (!nh.getParam("base_port", parameters.base_port))
+  if (!nh.getParam("device_port", parameters.device_port))
   {
-    ROS_ERROR_STREAM("Xbot : no base device port given on the parameter server (e.g. /dev/ttyUSB0)[" << name << "].");
-    return false;
-  }
-
-  if (!nh.getParam("sensor_port", parameters.sensor_port))
-  {
-    ROS_ERROR_STREAM("Xbot : no sensor device port given on the parameter server (e.g. /dev/ttyUSB0)[" << name << "].");
+    ROS_ERROR_STREAM("Xbot : no device port given on the parameter server (e.g. /dev/ttyUSB0)[" << name << "].");
     return false;
   }
 
@@ -174,10 +162,8 @@ bool XbotRos::init(ros::NodeHandle& nh)
     }
     else
     {
-      ROS_INFO_STREAM("Xbot : configured for connection on base_port "
-                      << parameters.base_port << " [" << name << "].");
-      ROS_INFO_STREAM("Xbot : configured for connection on sensor_port "
-                      << parameters.sensor_port << " [" << name << "].");
+      ROS_INFO_STREAM("Xbot : configured for connection on device_port "
+                      << parameters.device_port << " [" << name << "].");
       ROS_INFO_STREAM("Xbot : driver running in normal (non-simulation) mode" << " [" << name << "].");
     }
   }
@@ -195,12 +181,8 @@ bool XbotRos::init(ros::NodeHandle& nh)
 //    xbot.setBaseControl(0.4,0);
 
     ros::Duration(0.1).sleep(); // wait for some data to come in.
-    if ( !xbot.base_isAlive() ) {
-      ROS_WARN_STREAM("Xbot : no base data stream, is base board connected or turned on?");
-      // don't need to return false here - simply turning xbot on while spin()'ing should resurrect the situation.
-    }
-    if ( !xbot.sensor_isAlive() ) {
-      ROS_WARN_STREAM("Xbot : no sensor data stream, is sensor board connected or turned on?");
+    if ( !xbot.isAlive() ) {
+      ROS_WARN_STREAM("Xbot : no data stream, is xbot turned on?");
       // don't need to return false here - simply turning xbot on while spin()'ing should resurrect the situation.
     }
     xbot.enable();
@@ -211,8 +193,7 @@ bool XbotRos::init(ros::NodeHandle& nh)
     {
       case (ecl::OpenError):
       {
-        ROS_ERROR_STREAM("Xbot : could not open connection [" << parameters.base_port << "][" << name << "].");
-        ROS_ERROR_STREAM("Xbot : could not open connection [" << parameters.sensor_port << "][" << name << "].");
+        ROS_ERROR_STREAM("Xbot : could not open connection [" << parameters.device_port << "][" << name << "].");
         break;
       }
       default:
@@ -225,7 +206,6 @@ bool XbotRos::init(ros::NodeHandle& nh)
     return false;
   }
   // xbot.printSigSlotConnections();
-  xbot.setSoundEnableControl(true);
   return true;
 }
 /**
@@ -251,7 +231,7 @@ bool XbotRos::update()
     {
       xbot.setBaseControl(0, 0);
       cmd_vel_timed_out_ = true;
-//      ROS_ERROR("Xbot : Incoming velocity commands not received for more than %.2f seconds -> zero'ing velocity commands", odometry.timeout().toSec());
+      ROS_ERROR("Xbot : Incoming velocity commands not received for more than %.2f seconds -> zero'ing velocity commands", odometry.timeout().toSec());
     }
   }
   else
@@ -259,35 +239,18 @@ bool XbotRos::update()
     cmd_vel_timed_out_ = false;
   }
 
-  bool base_is_alive = xbot.base_isAlive();
-  if ( !base_is_alive )
+  bool is_alive = xbot.isAlive();
+  if ( !is_alive )
   {
-    if ( !base_serial_timed_out_ )
+    if ( !serial_timed_out_ )
     {
 
-      ROS_ERROR_STREAM("Xbot : Timed out while waiting for base serial data stream [" << name << "].");
-      base_serial_timed_out_ = true;
+      ROS_ERROR_STREAM("Xbot : Timed out while waiting for serial data stream [" << name << "].");
+      serial_timed_out_ = true;
     }
     else
     {
-      base_serial_timed_out_ = false;
-    }
-
-  }
-
-  bool sensor_is_alive = xbot.sensor_isAlive();
-  if ( !sensor_is_alive )
-  {
-
-    if ( !sensor_serial_timed_out_ )
-    {
-
-      ROS_ERROR_STREAM("Xbot : Timed out while waiting for sensor serial data stream [" << name << "].");
-      sensor_serial_timed_out_ = true;
-    }
-    else
-    {
-      sensor_serial_timed_out_ = false;
+      serial_timed_out_ = false;
     }
   }
 
@@ -302,26 +265,21 @@ bool XbotRos::update()
 void XbotRos::advertiseTopics(ros::NodeHandle& nh)
 {
   /*********************
-  ** Joint state publisher init
+  ** Turtlebot Required
   **********************/
   joint_state_publisher = nh.advertise <sensor_msgs::JointState>("joint_states",100);
 
   /*********************
-  ** Xbot publisher init
-  **********************/
-  core_sensor_publisher = nh.advertise < xbot_msgs::CoreSensor > ("sensors/core", 100);
-  extra_sensor_publisher = nh.advertise <xbot_msgs::ExtraSensor> ("sensors/extra", 100);
-  yaw_platform_state_publisher = nh.advertise<std_msgs::Int8>("sensors/yaw_platform_degree", 100);
-  pitch_platform_state_publisher = nh.advertise<std_msgs::Int8>("sensors/pitch_platform_degree", 100);
-  stop_buttom_state_publisher = nh.advertise<std_msgs::Bool>("sensors/motor_disabled",100);
-  sound_state_publisher = nh.advertise<std_msgs::Bool>("sensors/sound_enabled", 100);
-  battery_state_publisher = nh.advertise<xbot_msgs::Battery> ("sensors/battery", 100);
-
-  echo_data_publisher = nh.advertise < xbot_msgs::Echo > ("sensors/echo", 100);
+  ** Xbot Esoterics
+  **********************/  
+  sensor_state_publisher = nh.advertise < xbot_msgs::SensorState > ("sensors/core", 100);
+  dock_ir_publisher = nh.advertise < xbot_msgs::DockInfraRed > ("sensors/dock_ir", 100);
+  echo_data_publisher = nh.advertise < xbot_msgs::Echos > ("sensors/echo", 100);
   infrared_data_publisher = nh.advertise < xbot_msgs::InfraRed >("sensors/infrared", 100);
-
   imu_data_publisher = nh.advertise < sensor_msgs::Imu > ("sensors/imu_data", 100);
-  raw_imu_data_publisher = nh.advertise < xbot_msgs::RawImu > ("sensors/raw_imu_data", 100);
+  raw_imu_data_publisher = nh.advertise < xbot_msgs::ImuNine > ("sensors/imu_data_raw", 100);
+  raw_control_command_publisher = nh.advertise< std_msgs::Int16MultiArray > ("debug/raw_control_command", 100);
+  debug_sensors_publisher = nh.advertise < xbot_msgs::DebugSensor> ("debug/sensors_data",100);
   robot_state_publisher = nh.advertise <xbot_msgs::XbotState> ("xbot/state",100);
 }
 
@@ -331,14 +289,11 @@ void XbotRos::advertiseTopics(ros::NodeHandle& nh)
  */
 void XbotRos::subscribeTopics(ros::NodeHandle& nh)
 {
-  motor_enable_command_subscriber = nh.subscribe(std::string("commands/motor_disable"), 10, &XbotRos::subscribeMotorEnableCommand, this);
   velocity_command_subscriber = nh.subscribe(std::string("commands/velocity"), 10, &XbotRos::subscribeVelocityCommand, this);
-  yaw_platform_command_subscriber = nh.subscribe(std::string("commands/yaw_platform"), 10, &XbotRos::subscribeYawPlatformCommand, this);
-  pitch_platform_command_subscriber = nh.subscribe(std::string("commands/pitch_platform"), 10,&XbotRos::subscribePitchPlatformCommand, this);
-  sound_command_subscriber = nh.subscribe(std::string("commands/sound_enable"), 10, &XbotRos::subscribeSoundCommand, this);
-  led_command_subscriber = nh.subscribe(std::string("commands/led"), 10, &XbotRos::subscribeLedCommand, this);
   lift_command_subscirber = nh.subscribe("commands/lift", 10, &XbotRos::subscribeLiftCommand, this);
+  power_command_subscriber = nh.subscribe("commands/power", 10, &XbotRos::subscribePowerCommand, this);
   reset_odometry_subscriber = nh.subscribe("commands/reset_odometry", 10, &XbotRos::subscribeResetOdometry, this);
+  cloud_camera_subscriber = nh.subscribe("commands/cloud_camera", 10, &XbotRos::subscribeCloudCameraCommand, this);
 }
 
 

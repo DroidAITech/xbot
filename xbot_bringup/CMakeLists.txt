@@ -49,13 +49,3 @@ include_directories(
 )
 
 
-install(DIRECTORY launch
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-install(DIRECTORY param
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-catkin_install_python(PROGRAMS  scripts/control_publisher.py scripts/xbot_driver.py scripts/xbot_driver.pyc scripts/xbot_ros.py scripts/xbot_scan180.py scripts/xbot_state_publisher.py scripts/xbot_state_subscriber.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-

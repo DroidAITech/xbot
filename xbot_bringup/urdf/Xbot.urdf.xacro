@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+    - Base      : xbot
+    - Stacks    : hexagons
+    - 3d Sensor : kinect
+-->
+<robot name="xbot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="./xbot_new.urdf" />
+  <xbot/>
+  <sensor_asus_xtion_pro          parent="camera_platform"/>
+</robot>

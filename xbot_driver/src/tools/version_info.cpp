@@ -26,7 +26,7 @@ public:
   {
     xbot::Parameters parameters;
     parameters.sigslots_namespace = "/xbot"; // configure the first part of the sigslot namespace
-    parameters.base_port = device_port;    // the serial port to connect to (windows COM1..)
+    parameters.device_port = device_port;    // the serial port to connect to (windows COM1..)
     xbot.init(parameters);
     xbot.enable();
   }

@@ -10,10 +10,12 @@
     This controller can be enabled/disabled.
     The safety states (bumper pressed etc.) can be reset. WARNING: Dangerous!
   </description>
-  <author>Roc</author>
-  <author>yowlings@buaa.edu.cn</author>
-  <maintainer email="yowlings@buaa.edu.cn">Roc</maintainer>
-  <license>LGPL</license>  
+  <author email="marcus.liebhardt@yujinrobot.com">Marcus Liebhardt</author>
+  <maintainer email="marcus.liebhardt@yujinrobot.com">Marcus Liebhardt</maintainer>
+  <license>BSD</license>
+  <url type="bugtracker">https://github.com/yujinrobot/xbot/issues</url>
+  <url type="repository">https://github.com/yujinrobot/xbot</url>
+  <url type="website">http://ros.org/wiki/xbot_safety_controller</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 

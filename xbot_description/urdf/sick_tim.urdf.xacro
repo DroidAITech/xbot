@@ -7,8 +7,8 @@
 
   <xacro:macro name="rplidarA2" params="name ros_topic">
     <xacro:sick_tim name="${name}" ros_topic="${ros_topic}"
-      length="0.06" width="0.06" height="0.079" mass="0.150" z_offset="0.0308"
-      min_range="0.2" max_range="12.0"
+      length="0.06" width="0.06" height="0.079" mass="0.150" z_offset="0.05595"
+      min_range="0.2" max_range="8.0"
       mesh="package://xbot_description/models/meshes/rplidar.dae" />
   </xacro:macro>
 
@@ -28,7 +28,7 @@
 
   <xacro:macro name="sick_tim571" params="name ros_topic">
     <xacro:sick_tim name="${name}" ros_topic="${ros_topic}" 
-      length="0.06" width="0.06" height="0.086" mass="0.250" z_offset="0.05"
+      length="0.06" width="0.06" height="0.086" mass="0.250" z_offset="0.02"
       min_range="0.05" max_range="25.0"
       mesh="package://xbot_description/models/meshes/sick_tim571.stl" />
   </xacro:macro>
@@ -39,7 +39,7 @@
     <joint name="${name}_joint" type="fixed">
       <parent link="${name}_mount_link" />
       <child link="${name}" />
-      <origin rpy="0 0 3.1415926" xyz="0 0 ${z_offset}"/>
+      <origin rpy="0 0 0" xyz="0 0 ${z_offset}"/>
     </joint>
 
     <link name="${name}">

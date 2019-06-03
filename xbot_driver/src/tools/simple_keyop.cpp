@@ -165,7 +165,7 @@ bool XbotManager::init()
    **********************/
   xbot::Parameters parameters;
   parameters.sigslots_namespace = "/xbot";
-  parameters.base_port = "/dev/xbot";
+  parameters.device_port = "/dev/xbot";
   parameters.enable_acceleration_limiter = true;
 
   xbot.init(parameters);

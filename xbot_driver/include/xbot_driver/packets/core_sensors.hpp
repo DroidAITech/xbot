@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file include/xbot_driver/packets/core_sensors.hpp
  *
  * @brief Core sensor packet payloads.
@@ -36,47 +36,87 @@ namespace xbot
 class xbot_PUBLIC CoreSensors : public packet_handler::payloadBase
 {
 public:
-  CoreSensors() : packet_handler::payloadBase(false, 30),
-    queue_front_infrared(25),
-    queue_rear_infrared(25),
-    queue_front_echo(25),
-    queue_rear_echo(25)
+  CoreSensors() : packet_handler::payloadBase(false, 42),
+    queue_front_left_infrared(25),
+    queue_front_center_infrared(25),
+    queue_front_right_infrared(25),
+    queue_rear_left_infrared(25),
+    queue_rear_center_infrared(25),
+    queue_rear_right_infrared(25),
+    queue_dock_left_infrared(25),
+    queue_dock_right_infrared(25),
+    queue_front_left_echo(25),
+    queue_front_center_echo(25),
+    queue_front_right_echo(25),
+    queue_rear_left_echo(25),
+    queue_rear_center_echo(25),
+    queue_rear_right_echo(25)
     {};
 
   struct Data {
-    uint16_t left_encoder;
-    uint16_t right_encoder;
-    bool is_charging;
-    unsigned char power_percent;
-    uint16_t front_echo;
-    uint16_t rear_echo;
-//    uint16_t right_echo;
-    uint16_t front_infrared;
-    uint16_t rear_infrared;
+     float battery_voltage;
 
-    bool stop_button_state;
-    float left_motor_current;
-    float right_motor_current;
+     float front_left_infred;
+     float front_center_infred;
+     float front_right_infred;
+     float rear_left_infred;
+     float rear_center_infred;
+     float rear_right_infred;
+     float dock_left_infred;
+     float dock_right_infred;
 
-    uint32_t timestamp;
-    uint16_t error_state;
+     float front_left_current;
+     float front_right_current;
+     float rear_left_current;
+     float rear_right_current;
+     float up_down_current;
 
-    uint8_t version;
+     float front_left_echo;
+     float front_center_echo;
+     float front_right_echo;
+     float rear_left_echo;
+     float rear_center_echo;
+     float rear_right_echo;
 
+     uint16_t front_left_encoder;
+     uint16_t front_right_encoder;
+     uint16_t rear_left_encoder;
+     uint16_t rear_right_encoder;
+     uint16_t up_down_encoder;
+
+
+     short acce_x;
+     short acce_y;
+     short acce_z;
+     short gyro_x;
+     short gyro_y;
+     short gyro_z;
+     short mag_x;
+     short mag_y;
+     short mag_z;
+     short pressure;
+     short yaw;
+     short pitch;
+     short roll;
+     unsigned short timestamp;
   } data;
-
-
 //  infrared queue
-  lqueue <uint> queue_front_infrared;
-  lqueue <uint> queue_rear_infrared;
+  lqueue <uint> queue_front_left_infrared;
+  lqueue <uint> queue_front_center_infrared;
+  lqueue <uint> queue_front_right_infrared;
+  lqueue <uint> queue_rear_left_infrared;
+  lqueue <uint> queue_rear_center_infrared;
+  lqueue <uint> queue_rear_right_infrared;
+  lqueue <uint> queue_dock_left_infrared;
+  lqueue <uint> queue_dock_right_infrared;
 
 //  echo queue
-  lqueue <uint> queue_front_echo;
-  lqueue <uint> queue_rear_echo;
-
-
-
-
+  lqueue <uint> queue_front_left_echo;
+  lqueue <uint> queue_front_center_echo;
+  lqueue <uint> queue_front_right_echo;
+  lqueue <uint> queue_rear_left_echo;
+  lqueue <uint> queue_rear_center_echo;
+  lqueue <uint> queue_rear_right_echo;
 
   struct Flags {
       // Charging source

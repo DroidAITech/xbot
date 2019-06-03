@@ -19,7 +19,7 @@
 
 
 #include "packets/core_sensors.hpp"
-#include "packets/sensors.hpp"
+#include "packets/imu_sensors.hpp"
 
 
 #endif /* XBOT_PACKETS_HPP_ */

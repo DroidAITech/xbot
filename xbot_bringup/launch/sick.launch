@@ -1,0 +1,33 @@
+<launch>
+	<!--sick lidar bringup node-->
+	<node name="sick_tim" pkg="sick_tim" type="sick_tim551_2050001" respawn="false" output="screen">
+    <!-- default values: -->
+    <!-- angle range: -90~90 -->
+    <param name="min_ang" type="double" value="-1.5708" />
+    <param name="max_ang" type="double" value="1.5708" />
+  <!--<param name="intensity" type="bool" value="True" />
+      <param name="skip" type="int" value="0" />
+      <param name="frame_id" type="str" value="laser" />
+      <param name="time_offset" type="double" value="-0.001" />
+      <param name="publish_datagram" type="bool" value="False" />
+      <param name="subscribe_datagram" type="bool" value="false" />
+      <param name="device_number" type="int" value="0" />
+      <param name="range_min" type="double" value="0.05" />
+    -->
+    <!-- max range: 20m, max:25m -->
+    <param name="range_max" type="double" value="20.0" />
+
+    <!-- Older versions of the scanner firmware report an incorrect time_increment.
+         If you get a warning about time_increment, uncomment this. -->
+    <!-- <param name="time_increment" type="double" value="0.000061722" /> -->
+
+    <!-- Uncomment this to enable TCP instead of USB connection; 'hostname' is the host name or IP address of the laser scanner
+    In cases where a race condition exists and the computer boots up before the TIM is ready, increase 'timelimit.' -->
+
+    <param name="hostname" type="string" value="192.168.8.100" />
+    <param name="port" type="string" value="2112" />
+    <param name="timelimit" type="int" value="5" />
+
+  </node>
+
+</launch>

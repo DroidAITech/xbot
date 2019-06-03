@@ -54,7 +54,7 @@ Command Command::SetVelocityControl(const float &speed, const float &radius)
   return outgoing;
 }
 
-Command Command::SetLiftControl(const unsigned char &lift_height)
+Command Command::SetLiftHeightControl(const unsigned char &lift_height)
 {
     Command outgoing;
     outgoing.data.lift_height = lift_height;
@@ -64,42 +64,16 @@ Command Command::SetLiftControl(const unsigned char &lift_height)
 
 }
 
-Command Command::SetYawPlatformControl(const int &yaw_platform_degree)
+Command Command::SetPlatformAndCameraControl(const unsigned char &platform_angle, const unsigned char &camera_angle)
 {
-  Command outgoing;
-  outgoing.data.yaw_platform_degree = yaw_platform_degree+120;
-  outgoing.data.command = Command::YawPlatform;
-  return outgoing;
+    Command outgoing;
+    outgoing.data.platform_angle = platform_angle;
+    outgoing.data.camera_angle = camera_angle;
+    outgoing.data.command = Command::TurnPlatformAndCamera;
+    return outgoing;
+
 
 }
-
-Command Command::SetPitchPlatformControl(const int &pitch_platform_degree)
-{
-  Command outgoing;
-  outgoing.data.pitch_platform_degree = pitch_platform_degree+120;
-  outgoing.data.command = Command::PitchPlatform;
-  return outgoing;
-
-}
-
-Command Command::SetSoundControl(const bool &sound_state)
-{
-  Command outgoing;
-  outgoing.data.sound_state = sound_state;
-  outgoing.data.command = Command::Sound;
-  return outgoing;
-
-}
-
-Command Command::SetLedControl(const unsigned char &led)
-{
-  Command outgoing;
-  outgoing.data.led = led;
-  outgoing.data.command = Command::StateLed;
-  return outgoing;
-
-}
-
 
 Command Command::SetPowerControl(const bool &power_state)
 {
@@ -130,35 +104,25 @@ bool Command::serialise(ecl::PushAndPop<unsigned char> & byteStream)
   unsigned char lift_label = 1;
   switch (data.command)
   {
-    case Power:
-      buildBytes(cmd, byteStream);
-      buildBytes(data.power_state, byteStream);
-      break;
     case BaseControl:
       buildBytes(cmd, byteStream);
       buildBytes(data.speed, byteStream);
+      buildBytes(data.speed, byteStream);
       buildBytes(data.radius, byteStream);
+      break;
+    case Power:
+      buildBytes(cmd, byteStream);
+      buildBytes(data.power_state, byteStream);
       break;
     case Lift:
       buildBytes(cmd, byteStream);
       buildBytes(lift_label, byteStream);
       buildBytes(data.lift_height, byteStream);
       break;
-    case YawPlatform:
+    case TurnPlatformAndCamera:
       buildBytes(cmd, byteStream);
-      buildBytes(data.yaw_platform_degree, byteStream);
-      break;
-    case PitchPlatform:
-      buildBytes(cmd, byteStream);
-      buildBytes(data.pitch_platform_degree, byteStream);
-      break;
-    case Sound:
-      buildBytes(cmd, byteStream);
-      buildBytes(data.sound_state, byteStream);
-      break;
-    case StateLed:
-      buildBytes(cmd,byteStream);
-      buildBytes(data.led, byteStream);
+      buildBytes(data.platform_angle, byteStream);
+      buildBytes(data.camera_angle, byteStream);
       break;
     default:
       return false;

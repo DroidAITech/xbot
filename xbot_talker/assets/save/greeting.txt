@@ -1,0 +1,31 @@
+{
+    "greeting":[	
+	{
+            "name":"wangpeng",
+	          "greet_audio":"wav/greet_wangpeng.wav",
+            "reach_audio":"wav/reach_wangpeng.wav"
+	},
+	{
+            "name":"changzong",
+	    			"greet_audio":"wav/greet_cxm.wav",
+            "reach_audio":"wav/reach_cxm.wav"
+	},
+	{
+            "name":"fangyang",
+		    		"greet_audio":"wav/greet_fangyang.wav",
+            "reach_audio":"wav/reach_fangyang.wav"
+	},
+	{
+	    "name":"meeting",
+	    "reach_audio":"wav/reach_meeting.wav"
+	},
+	{
+	    "name":"zhangjing",
+	    "greet_audio":"wav/greet_zhangjing.wav",
+	    "reach_audio":"wav/reach_zhangjing.wav"
+	}
+	
+	
+    ]
+
+}

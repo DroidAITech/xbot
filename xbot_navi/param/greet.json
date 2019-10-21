@@ -1,0 +1,12 @@
+{
+	"wangpeng": 
+	{
+		"isVIP": true,
+		"greet_words": "小主汪鹏您好，请问有什么吩咐？"
+	},
+ 	"fangyang": 
+ 	{
+ 		"isVIP": true, 
+ 		"greet_words": "方总您好，下面请您给客户演示一下公司的迎宾机器人小德的功能，谢谢。"
+	}
+}

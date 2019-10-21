@@ -1,0 +1,118 @@
+{
+    "dictionary": [
+	{
+	    "keyword":["汪鹏"],
+	    "answer":"wangpeng",
+	    "isAudio":0,
+	    "flag":0
+	},
+	{
+	    "keyword":["常先明","常总"],
+	    "answer":"cxm",
+	    "isAudio":0,
+	    "flag":0
+	},
+	{
+	    "keyword":["方洋","方总"],
+	    "answer":"fangyang",
+	    "isAudio":0,
+	    "flag":0
+	},
+	{
+	    "keyword":["面试","会议","会议室"],
+	    "answer":"huiyishi",
+	    "isAudio":0,
+	    "flag":0
+	},
+  {
+      "keyword": ["你好"],
+      "answer": "wav/welcome.wav",
+	    "isAudio":1,
+      "flag": 0
+  },
+  {
+      "keyword": ["叫什么","名字"],
+      "answer": "wav/myname.wav",
+	    "isAudio":1,
+      "flag": 0
+  },
+  {
+      "keyword": ["你多大","几岁"],
+      "answer": "wav/age.wav",
+	    "isAudio":1,
+      "flag": 0
+	},
+  {
+      "keyword":["你来自"],
+      "answer":"wav/from.wav",
+	    "isAudio":1,
+      "flag":0
+  },
+  {
+      "keyword":["介绍","你","自"],
+      "answer":"wav/introduction.wav",
+	    "isAudio":1,
+      "flag":1
+  },
+	{
+	    "keyword":["你是谁"],
+	    "answer":"wav/iam.wav",
+	    "isAudio":1,
+	    "flag":0
+	},
+	{
+	    "keyword":["再见"],
+	    "answer":"wav/bye.wav",
+	    "isAudio":1,
+	    "flag":0
+	},
+	{
+	    "keyword":["高兴","见到你"],
+ 	    "answer":"wav/nicemeet.wav",
+	    "isAudio":1,
+	    "flag":1
+	},
+	{
+	    "keyword":["会做什么","你会什么","你会做什么"],
+	    "answer":"wav/ican.wav",
+	    "isAudio":1,
+	    "flag":0
+	},
+	{
+			"keyword":["快递"],
+			"answer":"wav/packet.wav",
+			"isAudio":1,
+	    "flag":0
+	},
+	{
+			"keyword":["介绍","重德智能"],
+			"answer":"wav/intro_zdzn.wav",
+			"isAudio":1,
+	    "flag":1
+	},
+	{
+			"keyword":["向前走","向前走一步"],
+			"answer":"move_go_forward",
+			"isAudio":0,
+	    "flag":0
+	},
+	{
+			"keyword":["向后走","向后走一步","向后退","向后退一步"],
+			"answer":"move_go_back",
+			"isAudio":0,
+	    "flag":0
+	},
+	{
+			"keyword":["向左转","向左旋转"],
+			"answer":"move_rotate_left",
+			"isAudio":0,
+	    "flag":0
+	},
+	{
+			"keyword":["向右转","向右旋转"],
+			"answer":"move_rotate_right",
+			"isAudio":0,
+	    "flag":0
+	}
+  ]
+}

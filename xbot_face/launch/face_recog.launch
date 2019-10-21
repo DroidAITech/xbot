@@ -1,0 +1,5 @@
+<launch>
+
+	<node name="face_recog" pkg="xbot_face" type="face_recog.py" />
+
+</launch>

@@ -1,0 +1,15 @@
+{
+	"wangpeng": 
+	{
+		"isVIP": true,
+		"greet_words": "汪鹏您好，欢迎来到重德智能，您预约的是常总，是否直接带您去常总办公室？",
+		"meet":"kp_cxm"
+
+	},
+ 	"lmx": 
+ 	{
+ 		"isVIP": true, 
+ 		"greet_words": "李梦欣您好，欢迎来到重德智能，您预约的是方总，是否直接带您去方总办公室？",
+ 		"meet":"kp_fangyang"
+	}
+}

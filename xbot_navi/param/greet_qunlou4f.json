@@ -1,0 +1,12 @@
+{
+	"wangpeng": 
+	{
+		"isVIP": true,
+		"greet_words": "汪鹏您好，您预定的是第三会议室，请跟我来。"
+	},
+ 	"wyj": 
+ 	{
+ 		"isVIP": true, 
+ 		"greet_words": "武老师您好，您预定的是第三会议室，请跟我来。"
+	}
+}

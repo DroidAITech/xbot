@@ -1,0 +1,5 @@
+<launch>
+        <node name="xbot_talker" pkg="xbot_talker" type="xbot_talker">
+		<param name="base_path" value="$(find xbot_talker)" />
+	</node>
+</launch>

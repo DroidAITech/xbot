@@ -43,7 +43,7 @@
 	<node name="face_recog" pkg="xbot_face" type="face_recog.py" />
 
 	<!-- talker -->
-  <include file="$(find xbot_talker)/launch/talker.launch" />
+        <include file="$(find xbot_talker)/launch/talker.launch" />
 
 	<!-- web_video-server -->
 	<node name="web_video_server" pkg="web_video_server" type="web_video_server" >
@@ -55,12 +55,16 @@
 	<!-- rosbridge_server -->
 	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
-    <arg name="xarm_port"        default="/dev/arm"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
-    <param name="/use_sim_time" value="false"/>
-    <arg name="port_baud"        default="1000000"  doc="used to set the baud" />
-    <node pkg="xbot_arm_driver" type="arm_node" name="xarm" output="screen">
-      <param name="xarm_port" value="$(arg xarm_port)" />
-      <param name="port_baud" value="$(arg port_baud)" />
-    </node>
+        <!-- 启动机械臂驱动，单臂，xarm_mode 的值为1；双臂xarm_mode的值为2 -->
+        <arg name="xarm_port"        default="/dev/arm"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+        <param name="/use_sim_time" value="false"/>
+        <arg name="port_baud"        default="1000000"  doc="used to set the baud" />
+        <node pkg="xbot_arm_driver" type="arm_node" name="xarm" output="screen">
+          <param name="xarm_port" value="$(arg xarm_port)" />
+          <param name="port_baud" value="$(arg port_baud)" />
+          <param name="xarm_mode" value="1" />
+        </node>
+
+
 
 </launch>

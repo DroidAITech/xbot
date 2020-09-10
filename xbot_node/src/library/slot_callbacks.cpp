@@ -318,6 +318,8 @@ void XbotRos::publishYawPlatformState() {
       std_msgs::Int8 yaw_platform_degree;
       Sensors::Data data = xbot.getExtraSensorsData();
       yaw_platform_degree.data = data.yaw_platform_degree - 120;
+      joint_states.position[2] = yaw_platform_degree.data*M_PI/180.0;
+
 
       yaw_platform_state_publisher.publish(yaw_platform_degree);
     }
@@ -330,6 +332,7 @@ void XbotRos::publishPitchPlatformState() {
       std_msgs::Int8 pitch_platform_degree;
       Sensors::Data data = xbot.getExtraSensorsData();
       pitch_platform_degree.data = data.pitch_platform_degree - 120;
+      joint_states.position[3] = -pitch_platform_degree.data*M_PI/180.0;
 
       pitch_platform_state_publisher.publish(pitch_platform_degree);
     }

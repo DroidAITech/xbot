@@ -33,6 +33,7 @@
   <build_depend>ecl_sigslots</build_depend>
   <build_depend>ecl_streams</build_depend>
   <build_depend>ecl_threads</build_depend>
+  <build_depend>xbot_driver</build_depend>
 
   <!-- For Tests -->
   <build_depend>rospy</build_depend>

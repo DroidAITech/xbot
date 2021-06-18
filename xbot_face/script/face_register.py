@@ -43,8 +43,8 @@ class face_register():
 		try:
 			mode = sys.argv[1]
 			if mode =="image":
-				user_name = sys.argv[1]
-				image_path = sys.argv[2]
+                                user_name = sys.argv[2]
+                                #image_path = sys.argv[2]
 				self.image_register(user_name)
 			if mode =="camera":
 				camera_index = getCameraId()

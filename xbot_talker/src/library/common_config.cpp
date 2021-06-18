@@ -42,7 +42,7 @@ std::string CommonConfig::configGramParas(const std::string base_path, const std
   //讯飞语音sdk参数配置
   const std::string ASR_RES_PATH = "fo|res/asr/common.jet";
   const std::string GRAMMAR_FILE = grammar_file;  // 到/config的绝对路径
-  const std::string GRAMMAR_BUILD_PATH = GRAMMAR_FILE + "/grammar";
+  const std::string GRAMMAR_BUILD_PATH = GRAMMAR_FILE;
 
   // 读入语法构建数据，存入 Userdata 中
   std::string filepath = GRAMMAR_BUILD_PATH + "/info.txt";

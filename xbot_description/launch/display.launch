@@ -1,11 +1,12 @@
 <launch>
-  <arg    name="model" />
-  <arg    name="gui"    default="True" />
-  <param name="robot_description" command="$(find xacro)/xacro.py --inorder $(find xbot_description)/urdf/robot.xacro" />
-  <param    name="use_gui"    value="$(arg gui)" />
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="TRUE"/>
+  <param command="$(find xacro)/xacro $(find xbot_description)/urdf/robot.xacro" name="robot_description">
+  </param>  
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
   </node>
-  <node    name="robot_state_publisher"    pkg="robot_state_publisher"    type="state_publisher" />
-  <node    name="rviz"    pkg="rviz"    type="rviz"    args="-d $(find xbot_description)/rviz/urdf.rviz" />
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+  </node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+  </node>
+  <node args="-d $(find xbot_description)/rviz/urdf.rviz" name="rviz" pkg="rviz" type="rviz">
+  </node> -->
 </launch>

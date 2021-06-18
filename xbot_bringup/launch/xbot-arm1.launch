@@ -1,0 +1,76 @@
+<launch>
+        <!-- Xbot -->
+        <arg name="simulation"        default="false"   doc="set flags to indicate this xbot is run in simulation mode."/>
+        <arg name="base_port"        default="/dev/xbot"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+
+        <arg name="sensor_port"        default="/dev/sensor"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+
+        <arg name="led_indicate_battery"                default = "True" />
+
+        <param name="/use_sim_time" value="$(arg simulation)"/>
+
+
+
+        <!-- Load the URDF/Xacro model of our robot -->
+        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find xbot_arm_description)/urdf/xbot_arm.urdf.xacro'" />
+
+
+        <!-- state publisher -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <param name="publish_frequency" type="double" value="20.0" />
+        </node>
+
+        <!-- xbot driver -->
+        <include file="$(find xbot_bringup)/launch/includes/xbot.launch.xml">
+        <arg name="base_port" value="$(arg base_port)" />
+        <arg name="sensor_port" value="$(arg sensor_port)" />
+        <arg name="led_indicate_battery" value="$(arg led_indicate_battery)" />
+        <param name="sim" value="false"/>
+        </include>
+
+	<!-- rplidar -->
+	<include file="$(find xbot_bringup)/launch/rplidar.launch">
+	</include>
+
+	<!-- realsense d415 -->
+	<include file="$(find xbot_bringup)/launch/realsense.launch">
+	</include>
+
+	<!-- face recog camera image -->
+	<node name="pub_camera_image" pkg="xbot_face" type="camera_image.py" >
+	</node>
+	<!-- output face recog result -->
+	<node name="face_recog" pkg="xbot_face" type="face_recog.py" />
+
+	<!-- talker -->
+        <include file="$(find xbot_talker)/launch/talker.launch" />
+
+	<!-- web_video-server -->
+	<node name="web_video_server" pkg="web_video_server" type="web_video_server" >
+		<param name="port"                       value="8080" />
+		<param name="address"                    value="192.168.8.101" />
+	</node>
+	
+
+	<!-- rosbridge_server -->
+	<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+
+        <!-- 启动机械臂驱动，单臂，xarm_mode 的值为1；双臂xarm_mode的值为2 -->
+        <arg name="xarm_port"        default="/dev/arm"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
+        <param name="/use_sim_time" value="false"/>
+        <arg name="port_baud"        default="1000000"  doc="used to set the baud" />
+        <node pkg="xbot_arm_driver" type="arm_node" name="xarm" output="screen">
+          <param name="xarm_port" value="$(arg xarm_port)" />
+          <param name="port_baud" value="$(arg port_baud)" />
+          <param name="xarm_mode" value="1" />
+        </node>
+        <include file="$(find xbot_arm_moveit_config)/launch/xbot_arm_moveit_planning_execution.launch" />
+
+        <node pkg="xbot_arm_driver" type="arm_base_api" name="arm_api" output="screen">
+          <param name="xarm_mode" value="1" />
+        </node>
+
+
+
+</launch>
+

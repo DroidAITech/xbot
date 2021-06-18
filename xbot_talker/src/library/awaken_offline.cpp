@@ -31,12 +31,12 @@ void AwakenOffline::checkIsAwaken()
 }
 
 // 科大讯飞登录以及语音唤醒相关参数的设置
-void AwakenOffline::loginAndSetParams(const std::string base_path, const std::string pcm_file, const int channel)
+void AwakenOffline::loginAndSetParams(const std::string appid, const std::string base_path, const std::string pcm_file, const int channel)
 {
   // 公司只买了语音合成以及离线关键词识别，appid对应的语音唤醒设备已经超出免费版范围（3台设备），
   // 于是自己注册了科大讯飞申请了新的appid，于是对应的libmsc.so和msc都需要重新的资源。
   // FIXME:购买语音唤醒功能后需替换appid和sdk资源
-  std::string login_parameters = "appid = 5ade9569, work_dir = " + base_path + "/defaultconfig";
+  std::string login_parameters = "appid = " + appid + ", work_dir = " + base_path + "/defaultconfig";
   int error_code = MSPLogin(NULL, NULL, login_parameters.c_str());
   if (MSP_SUCCESS != error_code)
   {

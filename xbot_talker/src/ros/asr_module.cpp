@@ -6,8 +6,11 @@
 int main(int argc, char** argv)
 {
   setlocale(LC_ALL, "");
+
   ros::init(argc, argv, "asr_sample");
+
   ASRModuleRos asr_ros;
   asr_ros.init();
   ros::spin();
+
 }

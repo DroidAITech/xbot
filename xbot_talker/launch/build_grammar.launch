@@ -1,5 +1,0 @@
-<launch>
-    <node name="foo" pkg="xbot_talker" type="setGrammarConfig.sh" output="screen" />
-    <node name="build_grammar" pkg="xbot_talker" type="build_grammar" output="screen"
-     args="$(find xbot_talker) $(find xbot_talker)/cache/grammar_config" />
-</launch>

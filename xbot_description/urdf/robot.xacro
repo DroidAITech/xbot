@@ -3,20 +3,18 @@
   xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
   xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
   xmlns:xacro="http://ros.org/wiki/xacro"
-  name="sick_tim">
-  
-  <xacro:include filename="$(find xbot_description)/urdf/sick_tim.urdf.xacro" />
-
+  name="xbot">
+  <xacro:include filename="$(find xbot_description)/urdf/_d415.urdf.xacro" />  
+  <xacro:include filename="$(find xbot_description)/urdf/laser.urdf.xacro" />
   <!-- Choose your laser -->
-  <xacro:sick_tim571 name="laser" ros_topic="scan"   />
+  <xacro:rplidarA2 name="laser" ros_topic="scan">
+  </xacro:rplidarA2>
   <!-- <xacro:rplidarA2 name="laser" ros_topic="scan"   /> -->
-
   <xacro:include filename="$(find xbot_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find xbot_description)/urdf/xbot-u.urdf.xacro" />
   <xacro:include filename="$(find xbot_description)/urdf/xbot-u.gazebo" />
   <xacro:xbot_base/>
-
-
-
-  
+  <xacro:sensor_d415 parent="camera_mount_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:sensor_d415>
 </robot>

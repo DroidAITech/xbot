@@ -1,0 +1,33 @@
+*.log
+*~
+*.user
+*.d
+*.g
+*.dat
+*.ldata
+debian/debhelper-build-stamp
+debian/ros-kinetic-xbot-talker.substvars
+debian/ros-kinetic-xbot-talker/
+debian/files
+obj-x86_64-linux-gnu/
+# tmp file used by vim.
+*.swp
+*.tmp
+# vscode file
+/.vscode
+/assets
+/defaultconfig/audio/mic_temp.pcm
+
+# user defined grammar file
+/cache
+/defaultconfig/grammar
+/tests/ts1/config
+/tests/ts1/ts1testaudio
+/tests/ts4/config
+/tests/ts5/testaudio
+/tests/ts5/config
+/tests/ts6/ts6testaudio
+/defaultconfig/msc
+
+# SDK cmake build
+/sdk_examples/*/build

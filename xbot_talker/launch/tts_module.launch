@@ -1,10 +1,7 @@
 <launch>
         <node name="tts_sample" pkg="xbot_talker" type="tts_sample" output="screen">
             <param name="base_path" value="$(find xbot_talker)" />
-            <param name="audio_channel" value="1" type="int" />
-            <param name="audio_save_path" value="$(find xbot_talker)/defaultconfig/audio" />
             <param name="log_path" value="$(find xbot_talker)/cache/log" />
-
         </node>
 </launch>
 

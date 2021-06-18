@@ -1,19 +1,18 @@
 <launch>
         <node name="asr_sample" pkg="xbot_talker" type="asr_sample" output="screen">
+            <param name="base_path" value="$(find xbot_talker)" />
             <param name="enable_xfei_online" value="false" type="bool" />
             <param name="enable_baidu_online" value="false" type="bool" />
-            <param name="enable_offline" value="true" type="bool" />
+            <param name="enable_xfei_offline" value="true" type="bool" />
             <param name="use_pcm_file" value="false" type="bool" />
+            <param name="pcm_file" value="$(find xbot_talker)/defaultconfig/audio/nihao_test.pcm" />
             <param name="use_mic" value="true" type="bool" />
             <param name="enable_record_save" value="false" type="bool" />
-
             <param name="record_time" value="3.5" />
-            <param name="base_path" value="$(find xbot_talker)" />
-            <param name="grammar_path" value="$(find xbot_talker)/cache/grammar_config" />
+            <param name="grammar_path" value="$(find xbot_talker)/defaultconfig/grammar" />
             <param name="audio_channel" value="1" type="int" />
-            <param name="audio_save_path" value="$(find xbot_talker)/defaultconfig/audio" />
             <param name="log_path" value="$(find xbot_talker)/cache/log" />
-            <param name="pcm_file" value="$(find xbot_talker)/defaultconfig/audio/nihao_test.pcm" />
-
+            <param name="baidu_api_key" value="kVcnfD9iW2XVZSMaLMrtLYIz" />
+            <param name="baidu_secret_key" value="O9o1O213UgG5LFn0bDGNtoRN3VWl2du6" />
         </node>
 </launch>

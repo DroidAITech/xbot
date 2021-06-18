@@ -1,34 +1,32 @@
 <launch>
-	<!-- Xbot -->
-	<arg name="simulation"        default="false"   doc="set flags to indicate this xbot is run in simulation mode."/>
-	<arg name="base_port"        default="/dev/xbot"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
-
-	<arg name="sensor_port"        default="/dev/sensor"  doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]"/>
-
-	<arg name="led_indicate_battery"                default = "True" />
-
-	<param name="/use_sim_time" value="$(arg simulation)"/>
-
-
-
-	<!-- Load the URDF/Xacro model of our robot -->
-	<arg name="urdf_file" default="$(find xacro)/xacro.py '$(find xbot_description)/urdf/robot.xacro'" />
-	<param name="robot_description" command="$(arg urdf_file)" />
-
-	<!-- state publisher -->
-	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
-	<param name="publish_frequency" type="double" value="20.0" />
-	</node>
-
-	<!-- xbot driver -->
-	<include file="$(find xbot_bringup)/launch/includes/xbot.launch.xml">
-	<arg name="base_port" value="$(arg base_port)" />
-	<arg name="sensor_port" value="$(arg sensor_port)" />
-	<arg name="led_indicate_battery" value="$(arg led_indicate_battery)" />
-	<param name="sim" value="false"/>
-	</include>
-
-
-
-
+  <!-- Xbot -->
+  <arg default="false" doc="set flags to indicate this xbot is run in simulation mode." name="simulation">
+  </arg>
+  <arg default="/dev/xbot" doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]" name="base_port">
+  </arg>
+  <arg default="/dev/sensor" doc="used by create to configure the port it is connected on [/dev/ttyUSB0, /dev/ttyS0]" name="sensor_port">
+  </arg>
+  <arg default="True" name="led_indicate_battery">
+  </arg>
+  <param name="/use_sim_time" value="$(arg simulation)">
+  </param>
+  <!-- Load the URDF/Xacro model of our robot -->
+  <param command="$(find xacro)/xacro.py --inorder $(find xbot_description)/urdf/robot.xacro" name="robot_description">
+  </param>
+  <!-- state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <param name="publish_frequency" type="double" value="20.0">
+    </param>
+  </node>
+  <!-- xbot driver -->
+  <include file="$(find xbot_bringup)/launch/includes/xbot.launch.xml">
+    <arg name="base_port" value="$(arg base_port)">
+    </arg>
+    <arg name="sensor_port" value="$(arg sensor_port)">
+    </arg>
+    <arg name="led_indicate_battery" value="$(arg led_indicate_battery)">
+    </arg>
+    <param name="sim" value="false">
+    </param>
+  </include>
 </launch>

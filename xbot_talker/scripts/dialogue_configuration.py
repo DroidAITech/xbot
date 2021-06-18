@@ -48,7 +48,7 @@ class DialogueConfig():
 
     # 获取动作模式字典信息
     def call_actionmodes(self, req):
-        filename = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/json/action_mode.json'
+        filename = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/json/action_mode.json'
         if req.get_actionmode_req:
             with open(filename, 'r') as f:
                 data = json.load(f)
@@ -67,7 +67,7 @@ class DialogueConfig():
 
     # 获取动作字典信息
     def call_actions(self, req):
-        filename = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/json/action.json'
+        filename = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/json/action.json'
         if req.get_action_req:
             with open(filename, 'r') as f:
                 data = json.load(f)
@@ -86,7 +86,7 @@ class DialogueConfig():
 
     # 保存对话配置并生效
     def add_dialogues(self, req):
-        filename = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/json/dialogue.json'
+        filename = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/json/dialogue.json'
         with open(filename, 'r') as f:
             data = json.load(f)
         dialogues = data['Dialogue']
@@ -106,7 +106,7 @@ class DialogueConfig():
             json.dump(data, file, indent=4, ensure_ascii=False)
         # 配置keyword到bnf文件
         print(chardet.detect(req.keyword))
-        filename_bnf = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/grammar.bnf'
+        filename_bnf = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/grammar.bnf'
         with open(filename_bnf,'r') as f:
             data_bnf = f.read()
         print(chardet.detect(data_bnf))
@@ -142,7 +142,7 @@ class DialogueConfig():
     # 获取对话配置最近10条历史记录功能，查询并返回所有的配置项，为回滚功能提供数据
     def get_history(self,req):
         if req.get_history_record:
-            filename = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/json/dialogue.json'
+            filename = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/json/dialogue.json'
             with open(filename, 'r') as f:
                 data = json.load(f)
             dialogues = data['Dialogue']
@@ -164,7 +164,7 @@ class DialogueConfig():
     # 对话配置回滚功能，根据配置时间可选择回滚到之前的设定
     # 返回值0：成功；１：失败
     def roolback_dialogue(self,req):
-        filename = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/json/dialogue.json'
+        filename = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/json/dialogue.json'
         with open(filename, 'r') as f:
             data = json.load(f)
         dialogues = data['Dialogue']
@@ -182,7 +182,7 @@ class DialogueConfig():
         with codecs.open(filename,'w','utf-8') as file:
 			json.dump(data, file, indent=4, ensure_ascii=False)
         # 回退grammar.bnf
-        filename_bnf = os.popen('rospack find xbot_talker').read().strip() + '/userconfig/grammar.bnf'
+        filename_bnf = os.popen('rospack find xbot_talker').read().strip() + '/defaultconfig/grammar.bnf'
         with open(filename_bnf,'r') as f:
             data_bnf = f.read()
         roolback_keyword = dialogues[i]['keyword'].encode('utf-8')

@@ -1,12 +1,11 @@
 <launch>
         <node name="awaken_sample" pkg="xbot_talker" type="awaken_sample" output="screen">
+            <param name="appid" value="5f85684b" />
             <param name="awaken_mode" value="mic" />
             <param name="record_time" value="600" type="int" />
             <param name="base_path" value="$(find xbot_talker)" />
             <param name="pcm_file" value="$(find xbot_talker)/defaultconfig/audio/awaken.pcm" />
             <param name="log_path" value="$(find xbot_talker)/cache/log" />
             <param name="enable_record_save" value="true" type="bool" />
-
-
         </node>
 </launch>

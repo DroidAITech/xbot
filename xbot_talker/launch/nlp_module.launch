@@ -3,5 +3,6 @@
             <param name="base_path" value="$(find xbot_talker)" />
             <param name="log_path" value="$(find xbot_talker)/cache/log" />
             <param name="nlp_config_path" value="$(find xbot_talker)/defaultconfig/answer_dic.csv" />
+            <param name="tuling_key" value="b4aac2a556b042269e418c78aa88f4cc" />
         </node>
 </launch>

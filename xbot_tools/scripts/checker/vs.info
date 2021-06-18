@@ -1,8 +1,0 @@
-S: v4l/by-id/usb-Intel_R__RealSense_TM__Depth_Camera_415_Intel_R__RealSense_TM__Depth_Camera_415_843613021347-video-index0
-E: DEVLINKS=/dev/v4l/by-path/pci-0000:02:00.0-usb-0:1:1.0-video-index0 /dev/v4l/by-id/usb-Intel_R__RealSense_TM__Depth_Camera_415_Intel_R__RealSense_TM__Depth_Camera_415_843613021347-video-index0
-E: ID_MODEL=Intel_R__RealSense_TM__Depth_Camera_415
-E: ID_MODEL_ENC=Intel\x28R\x29\x20RealSense\x28TM\x29\x20Depth\x20Camera\x20415\x20
-E: ID_SERIAL=Intel_R__RealSense_TM__Depth_Camera_415_Intel_R__RealSense_TM__Depth_Camera_415_843613021347
-E: ID_V4L_PRODUCT=Intel(R) RealSense(TM) Depth Ca
-E: ID_VENDOR=Intel_R__RealSense_TM__Depth_Camera_415
-E: ID_VENDOR_ENC=Intel\x28R\x29\x20RealSense\x28TM\x29\x20Depth\x20Camera\x20415\x20

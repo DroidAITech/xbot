@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import rospy, sys, termios, tty
+import rospy, sys, termios, tty, os
 import yaml,json
 
 from geometry_msgs.msg import Pose, PoseStamped
@@ -9,7 +9,8 @@ from visualization_msgs.msg import Marker, MarkerArray
 from move_base_msgs.msg import MoveBaseActionResult
 
 
-
+ws_path = os.popen('rospack find xbot_navi').read().strip()  #navigation_sim_demo工作区路径
+json_file = ws_path + '/json/kp.json'
 
 
 class input_kp():
@@ -34,7 +35,7 @@ class input_kp():
 		self.marker.action=Marker.ADD
 		self.arraymarker = MarkerArray()
 		self.markers_pub = rospy.Publisher('/kp',MarkerArray,queue_size=1)
-		self.goal_sub = rospy.Subscriber('/goal',PoseStamped, self.mark_kpCB)
+		self.goal_sub = rospy.Subscriber('/move_base_simple/goal',PoseStamped, self.mark_kpCB)
 
 		
 		
@@ -44,7 +45,7 @@ class input_kp():
 
 	def mark_kpCB(self, pos):
 		if self.num_kp <= self.total_kp:
-			kptmp = {"recog": False, "play_words": "大家好,这是安徽省机器人比赛服务机器人项讲解机器人子项的比赛现场,我是您的机器人讲解员小德.我们本场比赛总共设置了两个讲解点,目前我们所在的位置比赛的是第一个讲解点.", "name": "", "pose": [[pos.pose.position.x,pos.pose.position.y,pos.pose.position.z],[pos.pose.orientation.x,pos.pose.orientation.y,pos.pose.orientation.z,pos.pose.orientation.w]], "play": True, "chat": False}
+			kptmp = {"recog": False, "play_words": "请修改本处的讲解词。", "name": "", "pose": [[pos.pose.position.x,pos.pose.position.y,pos.pose.position.z],[pos.pose.orientation.x,pos.pose.orientation.y,pos.pose.orientation.z,pos.pose.orientation.w]], "play": True, "chat": False}
 			
 			self.kp.append(kptmp)
 			print self.kp
@@ -57,20 +58,19 @@ class input_kp():
 			self.arraymarker.markers.append(self.marker)
 			self.markers_pub.publish(self.arraymarker)
 			tip = '请在rviz当中使用鼠标点击第' + str(self.num_kp+1) +' 个目标点的位置。'
-			print tip
+			if self.num_kp < self.total_kp:
+				print tip
 		
 		if self.num_kp == self.total_kp:
-			with open('kp.json', 'w') as f:
+			with open(json_file, 'w') as f:
 				json.dump(self.kp,f,ensure_ascii=False)
 			
-			print '您已完成所有关键点的录入，关键点文件已成功存入运行目录下的keypoint.yaml文件，请使用ctrl+c退出程序即可。'
+			print '您已完成所有关键点的录入，关键点文件已成功存入xbot_navi/json目录下的kp.yaml文件，请使用ctrl+c退出程序即可。'
 
 		self.num_kp+=1
 
 	def goal_resultCB(self, result):
 		pass
-
-
 
 
 

@@ -25,11 +25,13 @@ void BaiduAsrOnline::praseToken()
   }
 }
 
-void BaiduAsrOnline::setAsrParams(const std::string base_path, const std::string pcm_file, const int channel)
+void BaiduAsrOnline::setAsrParams(std::string baidu_api_key, std::string baidu_srcret_key,const std::string base_path, const std::string pcm_file, const int channel)
 {
   base_path_ = base_path;
   pcm_file_ = pcm_file;
   channel_ = channel;
+  asr_config.api_key = baidu_api_key;
+  asr_config.secret_key = baidu_srcret_key;
 }
 void BaiduAsrOnline::initAndConfigAsr()
 {
@@ -37,10 +39,10 @@ void BaiduAsrOnline::initAndConfigAsr()
   curl_global_init(CURL_GLOBAL_ALL);
   // 配置asr相关参数
   // 填写网页上申请的appkey 如 g_api_key="g8eBUMSokVB1BHGmgxxxxxx"
-  asr_config.api_key = "kVcnfD9iW2XVZSMaLMrtLYIz";
+  //asr_config.api_key = "kVcnfD9iW2XVZSMaLMrtLYIz";
   // 填写网页上申请的APP SECRET 如
   // $secretKey="94dc99566550d87f8fa8ece112xxxxx"
-  asr_config.secret_key = "O9o1O213UgG5LFn0bDGNtoRN3VWl2du6";
+  //asr_config.secret_key = "O9o1O213UgG5LFn0bDGNtoRN3VWl2du6";
   // 文件后缀仅支持 pcm/wav/amr 格式，极速版额外支持m4a 格式
   asr_config.format = "pcm";
   asr_config.url = "http://vop.baidu.com/server_api";  // 可改为https

@@ -1,0 +1,26 @@
+stages:
+  - build-docs
+  - build-codes
+docs:
+  stage: build-docs
+  only:
+    - tags
+  tags:
+    - docs
+  script:
+    - sphinx-build -b html docs $CI_COMMIT_REF_NAME
+    - scp -r $CI_COMMIT_REF_NAME root@39.105.40.54:/var/www/html/docs/xbotu/
+
+codes:
+  stage: build-codes
+  only:
+    - tags
+  tags:
+    - kinetic
+  script:
+    - rm -rf /home/zdwp/catkin_ws/src/xbot/*
+    - cp -r * /home/zdwp/catkin_ws/src/xbot/
+    - cd /home/zdwp/catkin_ws
+    - source /opt/ros/kinetic/setup.bash
+    - rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
+    - catkin_make

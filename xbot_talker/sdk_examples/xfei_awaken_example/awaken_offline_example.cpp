@@ -7,6 +7,8 @@ AwakenOffline awaken_demo;
 const std::string base_path = "../../..";
 const int ONE_CHANNEL = 1;  // 单声道
 const int TWO_CHANNEL = 2;  // 双声道测试只能用于读取已有pcm文件识别
+const std::string appid = "5f85684b";
+
 
 typedef enum AWAKEN_MODE {
   READ_PCM_FILE_TO_ASR = 0,
@@ -85,16 +87,17 @@ int main(int argc, char** argv)
     std::thread check_0(isWaken_file);
     std::cout << "请输入用于测试的pcm文件,若输入为d，则用默认的文件进行唤醒测试:";
     std::cin >> pcm_file;
+
     if (pcm_file == "d")
     {
       pcm_file = base_path + "/defaultconfig/audio/awaken.pcm";
       // 科大讯飞离线唤醒登录以及参数设置
-      awaken_demo.loginAndSetParams(base_path, pcm_file, ONE_CHANNEL);
+      awaken_demo.loginAndSetParams(appid,base_path, pcm_file, ONE_CHANNEL);
     }
     else
     {
       // 科大讯飞离线唤醒登录以及参数设置
-      awaken_demo.loginAndSetParams(base_path, pcm_file, ONE_CHANNEL);
+      awaken_demo.loginAndSetParams(appid,base_path, pcm_file, ONE_CHANNEL);
     }
     // 离线唤醒模块的初始化
     awaken_demo.awakenInit();
@@ -112,7 +115,7 @@ int main(int argc, char** argv)
     // 启动检测是否已被唤醒的线程
     std::thread check_1(isWaken_mic);
     // 科大讯飞离线唤醒登录以及参数设置
-    awaken_demo.loginAndSetParams(base_path, pcm_file, channel);
+    awaken_demo.loginAndSetParams(appid,base_path, pcm_file, channel);
     // 离线唤醒模块的初始化
     awaken_demo.awakenInit();
     // record_time 录音时长(s),可修改

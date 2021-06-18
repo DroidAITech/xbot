@@ -1,0 +1,24 @@
+<launch>
+
+    <node name="foo" pkg="xbot_talker" type="setCacheFile.sh" output="screen" />
+
+    <!-- awaken module -->
+    <include file="$(find xbot_talker)/launch/awaken_module.launch">
+    </include>
+
+    <!-- asr module -->
+    <include file="$(find xbot_talker)/launch/asr_module.launch">
+    </include>
+
+    <!-- nlp module -->
+    <include file="$(find xbot_talker)/launch/nlp_module.launch">
+    </include>
+
+    <node name = "dialogue_config" pkg = "xbot_talker" type = "dialogue_configuration.py">
+    </node>
+    
+    <!-- tts module -->
+    <include file="$(find xbot_talker)/launch/tts_module.launch">
+    </include>
+
+</launch>

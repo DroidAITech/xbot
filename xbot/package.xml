@@ -1,6 +1,6 @@
 <package>
     <name>xbot</name>
-    <version>3.2.3</version>
+    <version>3.2.4</version>
     <description>
         --------------------------------------------------------------------------
         A group of ROS packages for xbot-u user using.

@@ -25,7 +25,7 @@ class demo():
 		# 请求清除costmap服务
 		self.clear_costmaps_srv = rospy.ServiceProxy('/move_base/clear_costmaps',Empty)
 		# 订阅是否收到visit信息
-		self.visit_sub = rospy.Subscriber('/demo/leave', Bool, self.visitCB)
+		self.visit_sub = rospy.Subscriber('/demo/visit', Bool, self.visitCB)
 
 		# 请求chat服务
 		self.chat_srv = rospy.ServiceProxy('/xbot/chat',chat)
@@ -45,8 +45,8 @@ class demo():
 		self.unknown_face_times = 0
 
 #        读取一存储的讲解点字典文件,默认位于xbot_s/param/position_dic.yaml文件
-		self.kp_path = rospy.get_param('/demo/kp_path','/home/roc/ros_kinetic_ws/xbot-u/src/xbot_navi/param/kp.json')
-		self.greet_path = rospy.get_param('/demo/greet_path','/home/roc/ros_kinetic_ws/xbot-u/src/xbot_navi/param/greet.json')
+		self.kp_path = rospy.get_param('/demo/kp_path','/home/xbot/catkin_ws/src/xbot/xbot_navi/json/kp.json')
+		self.greet_path = rospy.get_param('/demo/greet_path','/home/xbot/catkin_ws/src/xbot/xbot_navi/json/greet.json')
 #		yaml_path = yaml_path + '/scripts/position_dic.yaml'
 		with open(self.kp_path, 'r') as json_file:
 			self.kp_list = json.load(json_file)
@@ -114,9 +114,10 @@ class demo():
 
 	def visitCB(self, msg):
 		if msg.data:
-			end_talk = self.play_srv(False, 2, '', '好的，您请跟我来！')
-			if end_talk:
-				self.pub_kp()
+			self.pub_kp()
+			#end_talk = self.play_srv(False, 2, '', '好的，您请跟我来！')
+			#if end_talk:
+				#self.pub_kp()
 
 
 #    导航程序对前往目标点的执行结果
@@ -136,7 +137,6 @@ class demo():
 				self.pub_kp()
 		elif result.status.status == 4:
 #			到达目标点失败,slam发布abort信号给talker,talker会请求前方人员让一下,然后重新规划路径尝试去往目标点
-#           TODO:此时启用胸前深度摄像头确认前方障碍物情况再决定是否请求人员让一下
 			self.pub_kp()
 
 

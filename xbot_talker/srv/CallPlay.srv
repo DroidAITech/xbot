@@ -1,0 +1,6 @@
+uint8 loop_times
+uint8 mode
+string audio_path
+string tts_text
+---
+bool success

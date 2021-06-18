@@ -45,7 +45,7 @@ public:
    * @param pcm_file      - [in] 用于进行语音识别的录音文件.
    * @param channel       - [in] 音频声道数.1表示单声道,2表示双声道.
    */
-  void setAsrParams(const std::string base_path, const std::string pcm_file, const int channel);
+  void setAsrParams(std::string baidu_api_key, std::string baidu_srcret_key,const std::string base_path, const std::string pcm_file, const int channel);
 
   /**
    * @fn initAndConfigAsr

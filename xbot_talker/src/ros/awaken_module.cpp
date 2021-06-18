@@ -6,9 +6,7 @@
 int main(int argc, char** argv)
 {
   setlocale(LC_ALL, "");
-  
   ros::init(argc, argv, "awaken_sample");
-
   AwakenModuleRos awaken_ros;
   awaken_ros.init();
   ros::spin();

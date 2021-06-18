@@ -15,34 +15,54 @@
 enum RobotAciton
 {
   NO_ACTION = 0,
-  CLOSE_CHAT,
-  BACK_TO_ORIGINAL_LOCATION,
-  TAKE_A_STEP_FORWARD,
-  TAKE_A_STEP_BACKWARD,
-  TURN_LEFT,
-  TURN_RIGHT,
-  RAISE_LEFT_HAND,
-  PUT_DOWM_LEFT_HAND,
-  RAISE_RIGHT_HAND,
-  PUT_DOWN_RIGHT_HAND,
-  LEFT_HAND_GRIP,
-  LEFT_HAND_OPEN,
-  RIGHT_HAND_GRIP,
-  RIGHT_HAND_OPEN,
-  NAVI_TO_FANGZONG,
-  NAVI_TO_CHANGZONG,
-  START_CHAT,
+  CLOSE_CHAT = 1,
+  START_CHAT = 2,
+  TAKE_A_STEP_FORWARD = 101,
+  TAKE_A_STEP_BACKWARD =102,
+  TURN_LEFT = 103,
+  TURN_RIGHT = 104,
+  LOOK_UP = 105,
+  LOOK_DOWN = 106,
+  LOOK_LEFT =107,
+  LOOK_RIGHT = 108,
+  LOOK_FORWARD = 109,
+
+  RESET_ARM = 201,
+  RAISE_LEFT_HAND = 202,
+  PUT_DOWM_LEFT_HAND = 203,
+  RAISE_RIGHT_HAND = 204,
+  PUT_DOWM_RIGHT_HAND = 205,
+  LEFT_HAND_GRIP = 206,
+  LEFT_HAND_OPEN =207,
+  RIGHT_HAND_GRIP = 208,
+  RIGHT_HAND_OPEN =209,
+  RAISE_ARM = 210,
+  PUT_DOWN_ARM = 211,
+  OPEN_GRIPPER = 212,
+  CLOSE_GRIPPER = 213,
+
+
+  NAVI_START = 301,
+  NAVI_TO_POSE = 302,
+  NAVI_CANCEL = 303,
+  NAVI_CONTINUE = 304,
+  BACK_TO_ORIGINAL_LOCATION = 305,
+  NAVI_TO_FIRST_POSE = 311,
+  NAVI_TO_SECOND_POSE = 312,
+  NAVI_TO_THIRD_POSE = 313,
+  NAVI_TO_FOURTH_POSE = 314,
+  NAVI_TO_FIFTH_POSE = 315,
+
 };
 
 /** 动作模式字典 */
 enum ActionMode
 {
-  PLAY_BEFORE_ACTION = 0,
-  PLAY_AFTER_ACTION,
-  PLAY_AND_ACTION_SYNC,
-  PLAY_ONLY,
+  PLAY_ONLY = 0,
   ACTION_ONLY,
-
+  PLAY_BEFORE_ACTION,
+  PLAY_AND_ACTION_SYNC,
+  PLAY_AFTER_ACTION,
 };
 
 /** 语音识别结果处理 */
@@ -73,9 +93,9 @@ public:
    * @fn keywordDetection
    * @brief	根据交互模式answer_table_判断识别出的关键词是否有对应的响应策略.
    *        若该关键词有对应的响应回复,存入响应向量answer_dictionary_(4).
-   * @return bool       - 若该关键词有对应的响应回复，返回true.
+   * @return std::vector<std::string>    - 若存在响应，返回一整行响应策略，若不存在，则返回向量的空.
    */
-  bool keywordDetection();
+  std::vector<std::string> keywordDetection();
 
   /**
    * @fn keywordResponse
@@ -129,9 +149,10 @@ public:
   /**
    * @fn setAskJson
    * @brief	设置图灵机器人对话请求参数.
+   * @param tuling_key			- [in] 用户注册图灵的key
    * @param ask_str			- [in] 提问的语句.
    */
-  void setAskJson(const std::string ask_str);
+  void setAskJson(const std::string tuling_key,const std::string ask_str);
 
   /**
    * @fn callTulingApi
@@ -155,7 +176,7 @@ public:
 
 private:
   std::string tuling_url_ = "http://openapi.tuling123.com/openapi/api/v2";
-  std::string tuling_key_ = "58dcf416803a401a8b0770b9c551acef";
+  std::string tuling_key_;
   std::string ask_json_;
   std::string answer_json_;
   std::string answer_text_;

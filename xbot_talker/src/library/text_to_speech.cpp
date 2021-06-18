@@ -67,6 +67,7 @@ bool TextToSpeech::audioConverter(const std::string base_path, const char* src_t
   wave_pcm_hdr wav_hdr = default_wav_hdr;
   int synth_status = MSP_TTS_FLAG_STILL_HAVE_DATA;
 
+
   //判断src_text是否在text_audio_map中，
   //若存在，则直接播放对应的音频文件
   //不存在，则调用讯飞tts接口生成相应的音频文件并保存到相应路径
@@ -74,11 +75,13 @@ bool TextToSpeech::audioConverter(const std::string base_path, const char* src_t
   if (filter != text_audio_map.end())
   {
     //播放已存在的缓存文件
-    system(string("play " + text_audio_map[src_text]).c_str());
+    play_wav( text_audio_map[src_text]);
+
     std::cout << "Playing the file cached done.   " << std::endl;
   }
   else
   {
+
     std::cout << "需要调用xunfei tts函数生成相应音频文件并保存" << std::endl;
 
     string tmp_file = getAudioFile(text_audio_map);
@@ -330,4 +333,5 @@ int TextToSpeech::play_wav(const string& file_path)
   }
   int nread = fread(&wav_header, 1, sizeof(wav_header), fp);
   set_pcm_play(fp, &wav_header);
+  free(fp);
 }

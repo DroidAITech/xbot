@@ -16,11 +16,12 @@ public:
   /**
    * @fn loginAndSetParams
    * @brief	科大讯飞离线唤醒登录以及参数设置.
+   * @param appid			- [in] 科大讯飞官网注册应用的appid.
    * @param base_path			- [in] 到/xbot_talker目录的结对路径.
    * @param pcm_file      - [in] 用于进行离线唤醒的录音文件.
    * @param channel       - [in] 音频声道数.1表示单声道,2表示双声道.
    */
-  void loginAndSetParams(const std::string base_path, const std::string pcm_file, const int channel);
+  void loginAndSetParams(const std::string appid, const std::string base_path, const std::string pcm_file, const int channel);
 
   /**
    * @fn awakenInit

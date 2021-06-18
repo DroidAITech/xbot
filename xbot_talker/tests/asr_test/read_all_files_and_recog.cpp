@@ -61,7 +61,7 @@ int main(int argc, char** argv)
   std::string grammar_path;
   std::string pcm_file;
   int audio_channel;
-  std::string test_dir_path;
+  std::string test_dir_path,baidu_api_key,baidu_secret_key;
   ros::init(argc, argv, "asr_sample");
 
   ros::NodeHandle asr_nodehandle;
@@ -79,6 +79,9 @@ int main(int argc, char** argv)
   asr_nodehandle.param("/asr_sample/log_path", log_path, std::string("~/catkin_ws/src/xbot_talker/cache/log"));
 
   asr_nodehandle.param("/asr_sample/audio_channel", audio_channel, int(1));
+  asr_nodehandle.param("/asr_sample/baidu_api_key", baidu_api_key, std::string("kVcnfD9iW2XVZSMaLMrtLYIz"));
+  asr_nodehandle.param("/asr_sample/baidu_secret_key", baidu_secret_key, std::string("O9o1O213UgG5LFn0bDGNtoRN3VWl2du6"));
+
 
   if (enable_offline == true)
   {
@@ -101,7 +104,7 @@ int main(int argc, char** argv)
   for (int i = 0; i < files.size(); i++)
   {
     asr_module.setAsrParams(base_path, test_dir_path + "/" + files[i], asr_params_, audio_channel);
-    asr_online_module.setAsrParams(base_path, test_dir_path + "/" + files[i], audio_channel);
+    asr_online_module.setAsrParams(baidu_api_key, baidu_secret_key, base_path, test_dir_path + "/" + files[i], audio_channel);
 
     if (enable_offline && enable_online)
     {

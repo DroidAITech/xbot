@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
 )
-
 find_package(curl COMPONENTS)
 
 
@@ -32,18 +31,24 @@ add_message_files(
 
 ## Generate services in the 'srv' folder
 add_service_files(FILES
-    chat.srv
-    play.srv
   history_record.srv
   roolback_dialogue.srv
   deploy_dialogue.srv
   add_dialogue.srv
   call_action.srv
-  xbot_tts.srv
+  XbotTts.srv
   call_asr.srv
   call_actionmode.srv
   nlpdialog_config.srv
-  keyword_config.srv)
+  keyword_config.srv
+  EnableASR.srv
+  chat.srv
+  play.srv
+  CallChat.srv
+  CallPlay.srv
+  CallVersion.srv
+
+  )
 
 
 ## Generate actions in the 'action' folder
@@ -88,7 +93,6 @@ link_directories(/usr/local/lib ${PROJECT_SOURCE_DIR}/lib include ${catkin_INCLU
 file(GLOB SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/library/*.cpp")
 
 ## Declare a C++ executable
-add_executable(build_grammar src/ros/build_grammar_module.cpp src/library/build_xunfei_grammar.cpp src/library/common_config.cpp)
 add_executable(asr_sample src/ros/asr_module.cpp src/ros/xbot_talker_ros.cpp ${SOURCE})
 add_executable(nlp_sample src/ros/nlp_module.cpp src/ros/xbot_talker_ros.cpp ${SOURCE})
 add_executable(tts_sample src/ros/tts_module.cpp src/ros/xbot_talker_ros.cpp ${SOURCE})
@@ -107,8 +111,7 @@ target_link_libraries(tts_sample msc asound pthread  curl ${catkin_LIBRARIES})
 target_link_libraries(awaken_sample msc asound pthread  curl ${catkin_LIBRARIES})
 
 
-target_link_libraries(build_grammar msc curl ${catkin_LIBRARIES})
-target_link_libraries(read_files_asr msc asound pthread  curl ${catkin_LIBRARIES})
+target_link_libraries(read_files_asr msc asound pthread curl ${catkin_LIBRARIES})
 target_link_libraries(tuling_test msc asound pthread  curl ${catkin_LIBRARIES})
 
 ## Add cmake target dependencies of the executable

@@ -48,7 +48,7 @@ void ResultFeedback::uninitNLP()
 }
 
 // 根据交互模式配置文件检查识别出的关键词是否有对应的响应策略.
-bool ResultFeedback::keywordDetection()
+std::vector<std::string> ResultFeedback::keywordDetection()
 {
   for (int i = 0; i < (answer_table_.size() - 1); i++)
   {
@@ -66,9 +66,9 @@ bool ResultFeedback::keywordDetection()
     std::cout << "Can not find the answer corresponding to the keyword. Please check "
                  "the configuration file "
               << std::endl;
-    return false;
+    //return answer_dictionary_;
   }
-  return true;
+  return answer_dictionary_;
 }
 
 // 读取csv数据并存入answer_table_.
@@ -113,7 +113,7 @@ void ResultFeedback::robotPlay()
 // 根据响应vector内的值调用不同的响应接口，如发布控制指令，播放音频文件等。
 void ResultFeedback::keywordResponse(const std::string log_path)
 {
-  // csv 表格的第四列代表action_mode
+  // csv表格的第三列代表action动作，第四列代表action_mode。
   tts_path_ = log_path;
   int action_mode = std::stoi(answer_dictionary_[3]);
   std::cout << "Action mode is:  " << action_mode << std::endl;
@@ -146,8 +146,9 @@ void ResultFeedback::keywordResponse(const std::string log_path)
 }
 
 // 图灵请求参数格式为json，UTF-8编码.
-void TuLingRobot::setAskJson(const std::string ask_str)
+void TuLingRobot::setAskJson(const std::string tuling_key,const std::string ask_str)
 {
+  tuling_key_ = tuling_key;
   ask_json_ = "{\"reqType\": 0, \"perception\": {\"inputText\" : {\"text\": "
               "\"" +
               ask_str + "\"},"

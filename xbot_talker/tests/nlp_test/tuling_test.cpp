@@ -10,7 +10,8 @@ int main(int argc, char *argv[]) {
     return -1;
   }
   TuLingRobot tuling;
-  tuling.setAskJson(argv[1]);
+  std::string tuling_key = "b4aac2a556b042269e418c78aa88f4cc";
+  tuling.setAskJson(tuling_key, argv[1]);
   tuling.callTulingApi();
   tuling.textFromJson();
   return 0;

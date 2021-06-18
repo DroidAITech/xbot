@@ -20,10 +20,15 @@
       <inertia ixx="0.6125" ixy="0.00495" ixz="0.0031" iyy="0.6426" iyz="-0.0017" izz="0.494" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0.01" rpy="1.5707 0 -1.5707" />
       <geometry>
-        <mesh filename="package://xbot_description/models/meshes/base_link.dae" />
+        <mesh filename="package://xbot_description/models/xbot/bace.dae" />
       </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.2 0.2 0.2 1.0" />
+      </material>
     </visual>
 
     <collision name="front_omniwheel">
@@ -69,7 +74,7 @@
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="laser_mount_link"/>
-    <origin rpy="0 0 0" xyz=".120 0 .205"/>
+    <origin rpy="0 0 0" xyz="0.120 0 0.2"/>
   </joint>
 
   <link name="imu_link"/>
@@ -77,7 +82,7 @@
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin rpy="0 0 0" xyz="0.0454 -0.0157 1.1724"/>
+    <origin rpy="0 0 0" xyz="0.04548 -0.01552 1.1695"/>
   </joint>
 
   <link name="front_echo_link"/>
@@ -85,14 +90,14 @@
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="front_echo_link"/>
-    <origin rpy="0 0 0" xyz="0.236 0.0 0.05683"/>
+    <origin rpy="0 0 0" xyz="0.236 0.0 0.087"/>
   </joint>
   <link name="rear_echo_link"/>
   <joint name="base_to_rear_echo" type="fixed">
     <axis rpy="0 0 0" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="rear_echo_link"/>
-    <origin rpy="0 0 1.5707" xyz="-0.236 0.0 0.05683"/>
+    <origin rpy="0 0 1.5707" xyz="-0.236 0.0 0.087"/>
   </joint>
 
   <link name="left_wheel">
@@ -105,7 +110,7 @@
     <visual name="left_wheel_visual">
       <origin xyz="0 0 0" rpy="0 0 -1.57079632"/>
       <geometry>
-        <mesh filename="package://xbot_description/models/meshes/wheel.dae" />
+        <mesh filename="package://xbot_description/models/xbot/wheel.dae" />
       </geometry>
     </visual>
     <inertial>
@@ -117,7 +122,7 @@
 
   <joint type="continuous" name="left_wheel_hinge">
     <axis xyz="0 1 0" rpy="0 0 0"/>
-    <origin xyz="0 0.23 .095" rpy="0 0 0"/>
+    <origin xyz="0 0.2289 0.095" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="left_wheel"/>
     <limit effort="6" velocity="1.0"/>
@@ -134,7 +139,7 @@
     <visual name="right_wheel_visual">
       <origin xyz="0 0 0" rpy="0 0 1.57079632"/>
       <geometry>
-        <mesh filename="package://xbot_description/models/meshes/wheel.dae" />
+        <mesh filename="package://xbot_description/models/xbot/wheel.dae" />
       </geometry>
     </visual>    
     <inertial>
@@ -146,7 +151,7 @@
 
   <joint type="continuous" name="right_wheel_hinge">
     <axis xyz="0 1 0" rpy="0 0 0"/>
-    <origin xyz="0 -0.23 .095" rpy="0 0 0"/>
+    <origin xyz="0 -0.2289 0.095" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="right_wheel"/>
     <limit effort="6" velocity="1.0"/>
@@ -160,10 +165,18 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 1.57079632" />
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://xbot_description/models/meshes/yaw_platform.dae" />
+        <mesh
+          filename="package://xbot_description/models/xbot/head_yaw_link.STL" />
       </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.2 0.2 0.2 1.0" />
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 1.57079632" />
@@ -177,7 +190,7 @@
     <axis xyz="0 0 1"/>
     <parent link="base_link"/>
     <child link="yaw_platform"/>
-    <origin rpy="0 0 0" xyz="0 0 1.232"/>
+    <origin xyz="0 0 1.222" rpy="0 0 0"/>
     <limit effort="100" velocity="100" lower="-1.57" upper="1.57" />
     <dynamics damping="0.0" friction="10.0"/>
   </joint>
@@ -189,10 +202,18 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.5707 0" />
       <geometry>
-        <mesh filename="package://xbot_description/models/meshes/pitch_platform.dae" />
+        <mesh
+          filename="package://xbot_description/models/xbot/pitch.dae" />
       </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1.0" />
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -203,41 +224,22 @@
   </link>
 
   <joint name="yaw_to_pitch_platform" type="revolute">
-    <axis xyz="0 1 0"/>
+    <axis xyz="0 0 1"/>
     <parent link="yaw_platform"/>
     <child link="pitch_platform"/>
-    <origin rpy="0 0 0" xyz="0.0208 0 0.01325"/>
-    <limit effort="100" velocity="100" lower="-1.57" upper="1.57" />
+    <origin rpy="1.5708 0 0" xyz="0.0208 0.0013 0.01425"/>
+    <limit effort="100" velocity="100" lower="-1.047" upper="0.52" />
     <dynamics damping="0.0" friction="10.0"/>
   </joint>
 
   <!-- Camera -->
-  <link name="camera_link">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.1 0.1 0.1"/>
-      </geometry>
-    </collision>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <!--<mesh filename="package://xbot_description/models/meshes/xtion_pro_camera.dae" />-->
-        <mesh filename="package://xbot_description/models/meshes/realsense.dae" />
-      </geometry>
-    </visual>
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-  <joint name="camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="-0.005 0 .06" rpy="0 0 0"/>
+  <link name="camera_mount_link" />
+   
+  <joint name="pitch2camera_joint" type="fixed">
+    <axis xyz="0 0 0" />
+    <origin xyz="-0.005 0.035 0.0" rpy="-1.5708 0 0"/>
     <parent link="pitch_platform"/>
-    <child link="camera_link"/>
+    <child link="camera_mount_link"/>
   </joint>
 
 

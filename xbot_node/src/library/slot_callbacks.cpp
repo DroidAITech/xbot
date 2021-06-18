@@ -224,10 +224,12 @@ void XbotRos::publishExtraSensor() {
 
       extra_sensor.header.stamp = ros::Time::now();
       extra_sensor.yaw_platform_degree = data.yaw_platform_degree-120;
+      joint_states.position[2] = extra_sensor.yaw_platform_degree*3.1415926/180;
       if(fabs(ypd_-extra_sensor.yaw_platform_degree)>3.0){
         xbot.setYawPlatformControl(ypd_);
       }
       extra_sensor.pitch_platform_degree = data.pitch_platform_degree-120;
+      joint_states.position[3] = extra_sensor.pitch_platform_degree*3.1415926/180;
       if(fabs(ppd_-extra_sensor.pitch_platform_degree)>3.0){
         xbot.setPitchPlatformControl(ppd_);
       }

@@ -20,13 +20,7 @@ roslaunch xbot_navi build_map.launch
 然后在作为ROS从机的PC上运行可视化程序：
 
 ```
-roslaunch xbot_navi rviz_build_map.launch
-```
-
-或者也可以选择使用google开源的cartographer来建图：
-
-```
-roslaunch xbot_navi build_map_carto.launch
+roslaunch xbot_navi view_rviz.launch
 ```
 
 
@@ -39,12 +33,6 @@ roslaunch xbot_navi build_map_carto.launch
 roslaunch xbot_navi demo.launch
 ```
 
-或者使用cartographer:
-
-```
-roslaunch xbot_navi navi_carto.launch
-```
-
 
 
 ### 服务功能实现
@@ -53,13 +41,7 @@ roslaunch xbot_navi navi_carto.launch
 
 用户需要修改配置文件param/kp.json和param/greet.json来管理关键点和人脸问候语。
 
-运行可参考
-
-```
-roslaunch xbot_navi demo.launch
-```
-
-
+部署请参考用户手册。
 
 ## 参考链接
 
